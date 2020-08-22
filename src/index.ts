@@ -3,6 +3,7 @@ import { buildSchema } from "type-graphql";
 import Express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { LocationResolver } from "./resolvers/location.res";
+require("dotenv").config();
 
 const main = async () => {
   const schema = await buildSchema({
