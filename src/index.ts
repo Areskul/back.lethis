@@ -4,6 +4,7 @@ import Express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { LocationResolver } from "./resolvers/location.res";
 import { createConnection } from "typeorm";
+import { createServer } from "http";
 require("dotenv").config();
 
 const main = async () => {
@@ -11,12 +12,14 @@ const main = async () => {
     resolvers: [LocationResolver],
   });
   await createConnection().then(() => {
-    console.log("Connected to database");
+    console.log("Create connection");
   });
-  const apolloServer = new ApolloServer({ schema });
+  const apollo = new ApolloServer({ schema });
   const app = Express();
-  apolloServer.applyMiddleware({ app });
-  app.listen(8081, () => console.log("Server is listening on port 8081"));
+  const ws = createServer(app);
+  apollo.applyMiddleware({ app: app });
+  apollo.installSubscriptionHandlers(ws);
+  ws.listen(8081, () => console.log("Server is listening on port 8081"));
 };
 
 main();
