@@ -9,7 +9,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "apollo-server-express": "^2.16.1",
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
     "graphql-upload": "^11.0.0",

@@ -2,7 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { Entity, BaseEntity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @ObjectType()
-@Entity()
+@Entity("users")
 export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
@@ -10,9 +10,13 @@ export class User extends BaseEntity {
 
   @Field()
   @Column("text")
-  name: String;
+  name: string;
 
   @Field()
   @Column()
-  mail: String;
+  email: string;
+
+  @Field()
+  @Column()
+  password: string;
 }
