@@ -18,7 +18,7 @@ export class Product extends BaseEntity {
 
   @Field()
   @Column()
-  price: Number;
+  price: number;
 
   @Field()
   @Column()
