@@ -9,20 +9,22 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async register(
+  async registerUser(
+    @Arg("name") name: string,
     @Arg("email") email: string,
     @Arg("password") password: string
   ) {
-    const hashedPassword = await hash(password, 12);
     try {
+      const hashedPassword = await hash(password, 12);
       await User.insert({
+        name,
         email,
         password: hashedPassword,
       });
+      return true;
     } catch (err) {
       console.log(err);
       return false;
     }
-    return true;
   }
 }
