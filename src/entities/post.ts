@@ -9,15 +9,11 @@ import {
 import { User } from "./user";
 
 @ObjectType()
-@Entity("users")
+@Entity("posts")
 export class Post extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Field()
-  @Column("text")
-  name: string;
 
   @Field()
   @Column()
