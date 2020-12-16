@@ -20,7 +20,7 @@ export class UserResolver {
       const hashedPassword = await hash(password, 12);
       const user = { name, email, password: hashedPassword };
       const id = await User.insert(user);
-      const token = jwt.encode({ userId: id }, APP_SECRET);
+      const token = jwt.encode({ userId: id }, APP_SECRET, "HS256");
       return token;
     } catch (err) {
       console.log(err);
