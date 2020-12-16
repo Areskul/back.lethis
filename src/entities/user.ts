@@ -5,11 +5,13 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
+  Unique,
 } from "typeorm";
 import { Post } from "./post";
 
 @ObjectType()
 @Entity("users")
+@Unique(["name", "email"])
 export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()

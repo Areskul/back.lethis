@@ -16,7 +16,16 @@ const main = async () => {
   await createConnection().then(() => {
     console.log("Create connection");
   });
-  const apollo = new ApolloServer({ schema });
+  const apollo = new ApolloServer({
+    schema,
+    context: ({ req }) => {
+      const context = {
+        req,
+        //user: req.user, // `req.user` comes from `express-jwt`
+      };
+      return context;
+    },
+  });
   const app = Express();
   const ws = createServer(app);
   apollo.applyMiddleware({ app: app });
