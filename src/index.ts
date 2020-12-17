@@ -4,13 +4,14 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { createConnection } from "typeorm";
 import { createServer } from "http";
-//import { authPlugin } from "./middlewares/authPlugin";
+import { decode } from "./middlewares/authPlugin";
 require("dotenv").config();
 
 //Resolvers
 import { UserResolver } from "./resolvers/user.res";
 
 const main = async () => {
+  const app = express();
   const schema = await buildSchema({
     resolvers: [UserResolver],
   });
@@ -23,12 +24,13 @@ const main = async () => {
       const token = req.headers.authorization ? req.headers.authorization : "";
       const context = {
         req,
-        token: token,
+        user: {
+          id: decode(token),
+        },
       };
       return context;
     },
   });
-  const app = express();
   const ws = createServer(app);
   apollo.applyMiddleware({ app: app });
   apollo.installSubscriptionHandlers(ws);

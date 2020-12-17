@@ -1,14 +1,18 @@
-import { Resolver, Query, Arg, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { User } from "../entities/user";
 import { hash } from "bcryptjs";
-import jwt from "jwt-simple";
-const APP_SECRET = "iamironman";
+import { encode } from "../middlewares/authPlugin";
 
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  async users() {
-    return User.find();
+  async users(@Ctx() context: any) {
+    return User.find({
+      select: ["name", "email"],
+      where: {
+        id: context.user.id,
+      },
+    });
   }
   @Mutation(() => String)
   async registerUser(
@@ -20,7 +24,7 @@ export class UserResolver {
       const hashedPassword = await hash(password, 12);
       const user = { name, email, password: hashedPassword };
       const id = await User.insert(user);
-      const token = jwt.encode({ userId: id }, APP_SECRET, "HS256");
+      const token = encode({ userId: id });
       return token;
     } catch (err) {
       console.log(err);
