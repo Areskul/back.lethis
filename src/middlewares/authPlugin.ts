@@ -1,7 +1,6 @@
-import jwt from "express-jwt";
+import jwt from "jwt-simple";
 const APP_SECRET = "iamironman";
-export default jwt({
-  secret: APP_SECRET,
-  algorithms: ["sha1", "RS256", "HS256"],
-  credentialsRequired: false,
-});
+export function authPlugin(token: string) {
+  const decoded = token ? jwt.decode(token, APP_SECRET) : "";
+  return decoded;
+}
