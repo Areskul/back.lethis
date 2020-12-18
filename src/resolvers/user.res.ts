@@ -5,15 +5,19 @@ import { encode } from "../middlewares/authPlugin";
 
 @Resolver()
 export class UserResolver {
-  @Query(() => [User])
-  async users(@Ctx() context: any) {
-    console.log(context.user.id);
-    return User.find({
-      select: ["name", "email"],
-      where: {
-        id: context.user.id,
-      },
-    });
+  @Query(() => User)
+  async user(@Ctx() ctx: any) {
+    try {
+      console.log(ctx.user);
+      const user = await User.findOne({
+        select: ["id", "name", "email"],
+        where: ctx.user,
+      });
+      return user;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
   }
   @Mutation(() => String)
   async registerUser(

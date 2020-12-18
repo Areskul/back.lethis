@@ -11,27 +11,42 @@ require("dotenv").config();
 import { UserResolver } from "./resolvers/user.res";
 
 const main = async () => {
+  const path = "/graphql";
   const app = express();
   const schema = await buildSchema({
     resolvers: [UserResolver],
+    authMode: "null",
   });
   await createConnection().then(() => {
     console.log("Created connection to db");
   });
-  const apollo = new ApolloServer({
+  const server = new ApolloServer({
     schema,
     context: ({ req }) => {
-      const token = req.headers.authorization ? req.headers.authorization : "";
+      const token = req.headers.authorization || false;
+      const user = token ? decode(token) : {};
       const context = {
         req,
-        user: decode(token),
+        user: user,
       };
       return context;
     },
   });
+  //app.use(path, (req, _, next) => {
+  //try {
+  //const token = req.headers.authorization
+  //? (req.headers.authorization as string)
+  //: false;
+  //token ? decode(token) : "";
+  //next();
+  //} catch (err) {
+  //console.log(err);
+  //next();
+  //}
+  //});
   const ws = createServer(app);
-  apollo.applyMiddleware({ app: app });
-  apollo.installSubscriptionHandlers(ws);
+  server.applyMiddleware({ app: app, path: path });
+  server.installSubscriptionHandlers(ws);
   ws.listen(8081, () => console.log("Server is listening on port 8081"));
 };
 
