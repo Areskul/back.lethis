@@ -8,7 +8,6 @@ export class UserResolver {
   @Query(() => User)
   async user(@Ctx() ctx: any) {
     try {
-      console.log(ctx.user);
       const user = await User.findOne({
         select: ["id", "name", "email"],
         where: ctx.user,
