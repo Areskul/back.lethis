@@ -24,9 +24,7 @@ const main = async () => {
       const token = req.headers.authorization ? req.headers.authorization : "";
       const context = {
         req,
-        user: {
-          id: decode(token),
-        },
+        user: decode(token),
       };
       return context;
     },

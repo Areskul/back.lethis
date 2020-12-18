@@ -7,6 +7,7 @@ import { encode } from "../middlewares/authPlugin";
 export class UserResolver {
   @Query(() => [User])
   async users(@Ctx() context: any) {
+    console.log(context.user.id);
     return User.find({
       select: ["name", "email"],
       where: {
@@ -23,8 +24,9 @@ export class UserResolver {
     try {
       const hashedPassword = await hash(password, 12);
       const user = { name, email, password: hashedPassword };
-      const id = await User.insert(user);
-      const token = encode({ userId: id });
+      const res = await User.insert(user);
+      const id = res.identifiers[0];
+      const token = encode(id);
       return token;
     } catch (err) {
       console.log(err);
