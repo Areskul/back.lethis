@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { User } from "../entities/user";
-import { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 import { encode } from "../middlewares/authPlugin";
 
 @Resolver()
@@ -29,6 +29,35 @@ export class UserResolver {
       const user = { name, email, password: hashedPassword };
       const res = await User.insert(user);
       const id = res.identifiers[0];
+      const token = encode(id);
+      return token;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+  @Query(() => String, { nullable: true })
+  async loginUser(
+    @Arg("name", { nullable: true }) name: string,
+    @Arg("email", { nullable: true }) email: string,
+    @Arg("password") password: string
+  ) {
+    try {
+      const user = name ? { name: name } : { email: email };
+      const res = await User.findOne({
+        select: ["id", "name", "email", "password"],
+        where: user,
+      });
+      if (!res) {
+        throw new Error("Couldn't find any user");
+      }
+      console.log(res);
+
+      const valid = await compare(password, res.password);
+      if (!valid) {
+        throw new Error("bad password");
+      }
+      const id = { id: res.id };
       const token = encode(id);
       return token;
     } catch (err) {

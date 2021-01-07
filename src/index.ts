@@ -32,18 +32,6 @@ const main = async () => {
       return context;
     },
   });
-  //app.use(path, (req, _, next) => {
-  //try {
-  //const token = req.headers.authorization
-  //? (req.headers.authorization as string)
-  //: false;
-  //token ? decode(token) : "";
-  //next();
-  //} catch (err) {
-  //console.log(err);
-  //next();
-  //}
-  //});
   const ws = createServer(app);
   server.applyMiddleware({ app: app, path: path });
   server.installSubscriptionHandlers(ws);
