@@ -6,8 +6,10 @@ import {
   Mutation,
   Ctx,
   PubSub,
-  PubSubEngine,
+  Publisher,
+  //PubSubEngine,
 } from "type-graphql";
+
 import { Post } from "../entities/post";
 
 @Resolver()
@@ -28,12 +30,13 @@ export class PostResolver {
   async createPost(
     @Ctx() ctx: any,
     @Arg("content") content: string,
-    @PubSub() pubSub: PubSubEngine
+    @PubSub("POSTS") publish: Publisher<string>
   ) {
     try {
       const post = { content: content, user: ctx.user };
       await Post.insert(post);
-      await pubSub.publish("POSTS", post);
+      publish("NewPost");
+
       return true;
     } catch (err) {
       console.log(err);
@@ -41,7 +44,8 @@ export class PostResolver {
     }
   }
   @Subscription(() => [Post], { topics: "POSTS" })
-  async newPost() {
+  async newPost(): Promise<Post[]> {
+    console.log("inSub");
     try {
       const posts = await Post.find({
         select: ["id", "content", "user"],

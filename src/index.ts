@@ -14,29 +14,30 @@ import { PostResolver } from "./resolvers/post.res";
 const main = async () => {
   const PORT = 8081;
   const path = "/graphql";
+  const sub_path = "/subscriptions";
   const app = express();
   const schema = await buildSchema({
     resolvers: [UserResolver, PostResolver],
-    authMode: "null",
+    //authMode: "null",
   });
   await createConnection();
   const server = new ApolloServer({
     schema,
     subscriptions: {
-      path: path,
+      path: sub_path,
     },
     context: async ({ req, connection }) => {
       if (connection) {
         return connection.context;
       } else {
+        const token = req.headers.authorization || false;
+        const user = token ? await decode(token) : {};
+        const context = {
+          req,
+          user: user,
+        };
+        return context;
       }
-      const token = req.headers.authorization || false;
-      const user = token ? await decode(token) : {};
-      const context = {
-        req,
-        user: user,
-      };
-      return context;
     },
   });
   const ws = createServer(app);
