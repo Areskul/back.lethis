@@ -1,5 +1,6 @@
 import jwt from "jwt-simple";
-const APP_SECRET = "iamironman";
+
+const APP_SECRET = process.env.APP_SECRET!;
 
 export function decode(token: string) {
   token = token.replace("Bearer ", "");

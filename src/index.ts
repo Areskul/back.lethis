@@ -5,14 +5,13 @@ import { ApolloServer } from "apollo-server-express";
 import { createConnection } from "typeorm";
 import { createServer } from "http";
 import { decode } from "./middlewares/authPlugin";
-require("dotenv").config();
-
+import "dotenv/config";
 //Resolvers
 import { UserResolver } from "./resolvers/user.res";
 import { PostResolver } from "./resolvers/post.res";
 
 const main = async () => {
-  const PORT = 8081;
+  const PORT = process.env.PORT!;
   const path = "/graphql";
   const sub_path = "/subscriptions";
   const app = express();
