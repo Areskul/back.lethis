@@ -7,6 +7,9 @@ import { encode } from "../middlewares/authPlugin";
 export class UserResolver {
   @Query(() => User)
   async user(@Ctx() ctx: any) {
+    if (!ctx.user) {
+      throw new Error("Couldn't find any user");
+    }
     try {
       const user = await User.findOne({
         select: ["id", "name", "email"],
@@ -51,13 +54,13 @@ export class UserResolver {
       if (!res) {
         throw new Error("Couldn't find any user");
       }
-      console.log(res);
-
       const valid = await compare(password, res.password);
       if (!valid) {
-        throw new Error("bad password");
+        throw new Error("Bad password");
       }
       const id = { id: res.id };
+      console.log(id);
+
       const token = encode(id);
       return token;
     } catch (err) {

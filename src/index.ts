@@ -29,8 +29,8 @@ const main = async () => {
       if (connection) {
         return connection.context;
       } else {
-        const token = req.headers.authorization || false;
-        const user = token ? await decode(token) : {};
+        const token = req.headers.authorization!;
+        const user = token ? await decode(token) : undefined;
         const context = {
           req,
           user: user,

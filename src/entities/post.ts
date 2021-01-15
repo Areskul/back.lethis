@@ -19,6 +19,7 @@ export class Post extends BaseEntity {
   @Column()
   content: string;
 
+  @Field(() => User!)
   @ManyToOne(() => User, (user) => user.posts)
   user: User;
 }

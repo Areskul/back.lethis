@@ -18,7 +18,8 @@ export class PostResolver {
   async posts() {
     try {
       const posts = await Post.find({
-        select: ["id", "content", "user"],
+        select: ["id", "content"],
+        relations: ["user"],
       });
       return posts;
     } catch (err) {
@@ -30,28 +31,36 @@ export class PostResolver {
   async createPost(
     @Ctx() ctx: any,
     @Arg("content") content: string,
-    @PubSub("POSTS") publish: Publisher<string>
+    @PubSub("POSTS") publish: Publisher<Post>
   ) {
+    if (!ctx.user) {
+      throw new Error("Not logged in");
+    }
     try {
-      const post = { content: content, user: ctx.user };
+      let post = { content: content, user: ctx.user } as Post;
       await Post.insert(post);
-      publish("NewPost");
-
+      post = (await Post.findOne({
+        select: ["id", "content"],
+        relations: ["user"],
+        where: post,
+      })) as Post;
+      publish(post);
       return true;
     } catch (err) {
       console.log(err);
       return err;
     }
   }
-  @Subscription(() => [Post], { topics: "POSTS" })
-  async newPost(): Promise<Post[]> {
+  @Subscription(() => Post, { topics: "POSTS" })
+  async newPost(data: Post): Promise<Post> {
     console.log("inSub");
     try {
-      const posts = await Post.find({
-        select: ["id", "content", "user"],
+      const post = await Post.findOne({
+        select: ["id", "content"],
+        relations: ["user"],
+        where: data,
       });
-      console.log(posts);
-      return posts;
+      return post as Post;
     } catch (err) {
       console.log(err);
       return err;
