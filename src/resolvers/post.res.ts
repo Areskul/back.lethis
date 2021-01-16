@@ -7,20 +7,24 @@ import {
   Ctx,
   PubSub,
   Publisher,
+  Args,
   //PubSubEngine,
 } from "type-graphql";
+//import { BaseEntity } from "typeorm";
 
 import { Post } from "../entities/post";
+import { Sort, sorter } from "./base.res";
 
-@Resolver()
+@Resolver(() => Post)
 export class PostResolver {
   @Query(() => [Post])
-  async posts() {
+  async posts(@Args() { field, direction }: Sort) {
     try {
       const posts = await Post.find({
-        select: ["id", "content"],
+        select: ["id", "content", "createdAt"],
         relations: ["user"],
       });
+      sorter(posts, field!, direction);
       return posts;
     } catch (err) {
       console.log(err);
@@ -40,7 +44,7 @@ export class PostResolver {
       let post = { content: content, user: ctx.user } as Post;
       await Post.insert(post);
       post = (await Post.findOne({
-        select: ["id", "content"],
+        select: ["id", "content", "createdAt"],
         relations: ["user"],
         where: post,
       })) as Post;
@@ -56,7 +60,7 @@ export class PostResolver {
     console.log("inSub");
     try {
       const post = await Post.findOne({
-        select: ["id", "content"],
+        select: ["id", "content", "createdAt"],
         relations: ["user"],
         where: data,
       });
