@@ -11,8 +11,8 @@ export class Sort {
 }
 
 enum Direction {
-  asc,
-  desc,
+  asc = "asc",
+  desc = "desc",
 }
 
 registerEnumType(Direction, {
@@ -21,13 +21,13 @@ registerEnumType(Direction, {
 });
 
 export function sorter(data: any, field: string, direction?: Direction): any {
-  console.log(direction);
   data.sort((a: any, b: any) => {
-    return descSort(a, b, field);
+    if (direction == Direction.asc) {
+      return ascSort(a, b, field);
+    } else {
+      return descSort(a, b, field);
+    }
   });
-
-  console.log(data);
-
   return data;
 }
 
@@ -35,10 +35,10 @@ export function descSort(a: any, b: any, field: string) {
   if (!a.hasOwnProperty(field) || !b.hasOwnProperty(field)) {
     throw new Error("Couldn't find field name OR field contain a null value");
   }
-  if (a[field] < b[field]) {
+  if ((a[field] as number) < (b[field] as number)) {
     return 1;
   }
-  if (a[field] > b[field]) {
+  if ((a[field] as number) > (b[field] as number)) {
     return -1;
   }
   return 0;
@@ -47,10 +47,10 @@ export function ascSort(a: any, b: any, field: string) {
   if (!a.hasOwnProperty(field) || !b.hasOwnProperty(field)) {
     throw new Error("Couldn't find field name OR field contain a null value");
   }
-  if (a[field] < b[field]) {
+  if ((a[field] as number) < (b[field] as number)) {
     return -1;
   }
-  if (a[field] > b[field]) {
+  if ((a[field] as number) > (b[field] as number)) {
     return 1;
   }
   return 0;

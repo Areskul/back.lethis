@@ -24,8 +24,8 @@ export class PostResolver {
         select: ["id", "content", "createdAt"],
         relations: ["user"],
       });
-      sorter(posts, field!, direction);
-      return posts;
+      const sorted = sorter(posts, field!, direction);
+      return sorted;
     } catch (err) {
       console.log(err);
       return err;
