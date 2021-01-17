@@ -3,10 +3,10 @@ import { ArgsType, Field, registerEnumType } from "type-graphql";
 
 @ArgsType()
 export class Sort {
-  @Field(() => String, { nullable: true, defaultValue: "createdAt" })
+  @Field(() => String, { defaultValue: "createdAt" })
   field?: string;
 
-  @Field(() => String, { nullable: true, defaultValue: "desc" })
+  @Field(() => String, { defaultValue: "desc" })
   direction?: Direction;
 }
 

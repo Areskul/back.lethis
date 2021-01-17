@@ -8,6 +8,7 @@ import {
   PubSub,
   Publisher,
   Args,
+  Root,
   //PubSubEngine,
 } from "type-graphql";
 //import { BaseEntity } from "typeorm";
@@ -42,13 +43,10 @@ export class PostResolver {
     }
     try {
       let post = { content: content, user: ctx.user } as Post;
-      await Post.insert(post);
-      post = (await Post.findOne({
-        select: ["id", "content", "createdAt"],
-        relations: ["user"],
-        where: post,
-      })) as Post;
-      publish(post);
+      const res = await Post.insert(post);
+      post = res.identifiers[0] as Post;
+
+      await publish(post);
       return true;
     } catch (err) {
       console.log(err);
@@ -56,13 +54,12 @@ export class PostResolver {
     }
   }
   @Subscription(() => Post, { topics: "POSTS" })
-  async newPost(data: Post): Promise<Post> {
-    console.log("inSub");
+  async newPost(@Root() payload: Post): Promise<Post> {
     try {
       const post = await Post.findOne({
         select: ["id", "content", "createdAt"],
         relations: ["user"],
-        where: data,
+        where: payload,
       });
       return post as Post;
     } catch (err) {

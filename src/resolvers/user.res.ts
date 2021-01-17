@@ -1,7 +1,24 @@
-import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
-import { User } from "../entities/user";
+import {
+  Resolver,
+  Query,
+  Arg,
+  Mutation,
+  Ctx,
+  ObjectType,
+  Field,
+} from "type-graphql";
 import { hash, compare } from "bcryptjs";
 import { encode } from "../middlewares/authPlugin";
+
+import { User } from "../entities/user";
+
+@ObjectType()
+class Payload {
+  @Field()
+  token: string;
+  @Field(() => User)
+  user: User;
+}
 
 @Resolver()
 export class UserResolver {
@@ -21,7 +38,7 @@ export class UserResolver {
       return err;
     }
   }
-  @Mutation(() => String)
+  @Mutation(() => Payload)
   async registerUser(
     @Arg("name") name: string,
     @Arg("email") email: string,
@@ -30,16 +47,21 @@ export class UserResolver {
     try {
       const hashedPassword = await hash(password, 12);
       const user = { name, email, password: hashedPassword };
-      const res = await User.insert(user);
-      const id = res.identifiers[0];
+      await User.insert(user);
+      const res = (await User.findOne({ where: user })) as User;
+      const id = { id: res.id };
       const token = encode(id);
-      return token;
+      console.log(res);
+      return {
+        token: token,
+        user: res,
+      };
     } catch (err) {
       console.log(err);
       return err;
     }
   }
-  @Query(() => String, { nullable: true })
+  @Query(() => Payload, { nullable: true })
   async loginUser(
     @Arg("name", { nullable: true }) name: string,
     @Arg("email", { nullable: true }) email: string,
@@ -51,6 +73,7 @@ export class UserResolver {
         select: ["id", "name", "email", "password"],
         where: user,
       });
+
       if (!res) {
         throw new Error("Couldn't find any user");
       }
@@ -59,10 +82,14 @@ export class UserResolver {
         throw new Error("Bad password");
       }
       const id = { id: res.id };
-      console.log(id);
-
       const token = encode(id);
-      return token;
+      console.log(token);
+      console.log(user);
+
+      return {
+        token: token,
+        user: res,
+      };
     } catch (err) {
       console.log(err);
       return err;
