@@ -1,24 +1,8 @@
-import {
-  Resolver,
-  Query,
-  Arg,
-  Mutation,
-  Ctx,
-  ObjectType,
-  Field,
-} from "type-graphql";
+import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { hash, compare } from "bcryptjs";
 import { encode } from "../middlewares/authPlugin";
 
 import { User } from "../entities/user";
-
-@ObjectType()
-class Payload {
-  @Field()
-  token: string;
-  @Field(() => User)
-  user: User;
-}
 
 @Resolver()
 export class UserResolver {
@@ -38,7 +22,7 @@ export class UserResolver {
       return err;
     }
   }
-  @Mutation(() => Payload)
+  @Mutation(() => String)
   async registerUser(
     @Arg("name") name: string,
     @Arg("email") email: string,
@@ -47,21 +31,17 @@ export class UserResolver {
     try {
       const hashedPassword = await hash(password, 12);
       const user = { name, email, password: hashedPassword };
-      await User.insert(user);
-      const res = (await User.findOne({ where: user })) as User;
-      const id = { id: res.id };
+      const res = await User.insert(user);
+      const id = res.identifiers[0];
       const token = encode(id);
       console.log(res);
-      return {
-        token: token,
-        user: res,
-      };
+      return token;
     } catch (err) {
       console.log(err);
       return err;
     }
   }
-  @Query(() => Payload, { nullable: true })
+  @Query(() => String, { nullable: true })
   async loginUser(
     @Arg("name", { nullable: true }) name: string,
     @Arg("email", { nullable: true }) email: string,
@@ -85,11 +65,53 @@ export class UserResolver {
       const token = encode(id);
       console.log(token);
       console.log(user);
+      return token;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
 
-      return {
-        token: token,
-        user: res,
-      };
+  @Mutation(() => Boolean)
+  async resetPassword(
+    //@Ctx() ctx: any,
+    @Arg("name", { nullable: true }) name: string,
+    @Arg("email", { nullable: true }) email: string
+    //@Arg("password") password: string
+  ) {
+    const user = name ? { name: name } : { email: email };
+    const res = await User.findOne({
+      select: ["id", "name", "email", "password"],
+      where: user,
+    });
+
+    if (!res) {
+      throw new Error("Couldn't find any user");
+    }
+    try {
+      return true;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+  @Query(() => Boolean)
+  async getPasswordResetToken(
+    @Arg("name", { nullable: true }) name: string,
+    @Arg("email", { nullable: true }) email: string
+  ) {
+    const user = name ? { name: name } : { email: email };
+    const res = await User.findOne({
+      select: ["id", "name", "email"],
+      where: user,
+    });
+    if (!res) {
+      throw new Error("Couldn't find any user");
+    }
+    try {
+      //const id = { id: res.id };
+      //const token = encode(id);
+      return true;
     } catch (err) {
       console.log(err);
       return err;
