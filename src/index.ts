@@ -10,6 +10,8 @@ import "dotenv/config";
 import { UserResolver } from "./resolvers/user.res";
 import { PostResolver } from "./resolvers/post.res";
 
+const SECRET = process.env.APP_SECRET as string;
+
 const main = async () => {
   const PORT = process.env.PORT!;
   const path = "/graphql";
@@ -30,7 +32,7 @@ const main = async () => {
         return connection.context;
       } else {
         const token = req.headers.authorization!;
-        const user = token ? await decode(token) : undefined;
+        const user = token ? await decode(token, SECRET) : undefined;
         const context = {
           req,
           user: user,

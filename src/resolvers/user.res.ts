@@ -3,6 +3,7 @@ import { hash, compare } from "bcryptjs";
 import { encode } from "../middlewares/authPlugin";
 
 import { User } from "../entities/user";
+const SECRET = process.env.APP_SECRET as string;
 
 @Resolver()
 export class UserResolver {
@@ -33,7 +34,7 @@ export class UserResolver {
       const user = { name, email, password: hashedPassword };
       const res = await User.insert(user);
       const id = res.identifiers[0];
-      const token = encode(id);
+      const token = encode(id, SECRET);
       console.log(res);
       return token;
     } catch (err) {
@@ -62,7 +63,7 @@ export class UserResolver {
         throw new Error("Bad password");
       }
       const id = { id: res.id };
-      const token = encode(id);
+      const token = encode(id, SECRET);
       console.log(token);
       console.log(user);
       return token;
@@ -95,11 +96,12 @@ export class UserResolver {
       return err;
     }
   }
-  @Query(() => Boolean)
-  async getPasswordResetToken(
+  @Mutation(() => Boolean)
+  async getResetPasswordToken(
     @Arg("name", { nullable: true }) name: string,
     @Arg("email", { nullable: true }) email: string
   ) {
+    const SECRET = process.env.APP_SECRET2 as string;
     const user = name ? { name: name } : { email: email };
     const res = await User.findOne({
       select: ["id", "name", "email"],
@@ -109,8 +111,11 @@ export class UserResolver {
       throw new Error("Couldn't find any user");
     }
     try {
-      //const id = { id: res.id };
-      //const token = encode(id);
+      const id = { id: res.id };
+      const secret = process.env.APP_SECRET2;
+      const token = encode(id, SECRET);
+      console.log(token + " " + secret);
+
       return true;
     } catch (err) {
       console.log(err);

@@ -1,15 +1,12 @@
 import jwt from "jwt-simple";
-import "dotenv/config";
 
-const APP_SECRET = process.env.APP_SECRET!;
-
-export function decode(token: string) {
+export function decode(token: string, secret: string) {
   token = token.replace("Bearer ", "");
   //token = token.substring(1, token.length - 1);
-  const decoded = token ? jwt.decode(token, APP_SECRET) : "";
+  const decoded = token ? jwt.decode(token, secret) : "";
   return decoded;
 }
-export function encode(obj: object) {
-  const token = obj ? jwt.encode(obj, APP_SECRET) : undefined;
+export function encode(obj: object, secret: string) {
+  const token = obj ? jwt.encode(obj, secret) : undefined;
   return token;
 }
