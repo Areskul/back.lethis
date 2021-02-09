@@ -1,6 +1,7 @@
 import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { hash, compare } from "bcryptjs";
 import { encode } from "../middlewares/authPlugin";
+import { sendMail } from "../middlewares/sendMail";
 
 import { User } from "../entities/user";
 const SECRET = process.env.APP_SECRET as string;
@@ -112,10 +113,9 @@ export class UserResolver {
     }
     try {
       const id = { id: res.id };
-      const secret = process.env.APP_SECRET2;
-      const token = encode(id, SECRET);
-      console.log(token + " " + secret);
-
+      const token = encode(id, SECRET) as string;
+      const receivers = ["areskul@areskul.com"];
+      sendMail(token, receivers);
       return true;
     } catch (err) {
       console.log(err);
