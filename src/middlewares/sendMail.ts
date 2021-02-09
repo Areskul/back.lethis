@@ -44,6 +44,7 @@ export const sendMail = async (token: string, receivers: string[]) => {
     height: var(--spacing);
     padding-bottom: var(--spacing);
     padding-left: var(--indent);
+    padding-right: var(--indent);
   }
   .gradient {
     z-index: -1;

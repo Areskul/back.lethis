@@ -32,10 +32,21 @@ export class UserResolver {
   ) {
     try {
       const hashedPassword = await hash(password, 12);
-      const user = { name, email, password: hashedPassword };
-      const res = await User.insert(user);
-      const id = res.identifiers[0];
-      const token = encode(id, SECRET);
+      const data = { name, email, password: hashedPassword };
+      User.insert(data);
+      const res = await User.findOne({
+        select: ["id", "name", "email", "password"],
+        where: data,
+      });
+      if (!res) {
+        throw new Error("Couldn't register user");
+      }
+      const user = {
+        id: res.id as number,
+        name: res.name as string,
+        email: res.email as string,
+      };
+      const token = encode(user, SECRET);
       console.log(res);
       return token;
     } catch (err) {
@@ -50,10 +61,10 @@ export class UserResolver {
     @Arg("password") password: string
   ) {
     try {
-      const user = name ? { name: name } : { email: email };
+      const data = name ? { name: name } : { email: email };
       const res = await User.findOne({
         select: ["id", "name", "email", "password"],
-        where: user,
+        where: data,
       });
 
       if (!res) {
@@ -63,8 +74,12 @@ export class UserResolver {
       if (!valid) {
         throw new Error("Bad password");
       }
-      const id = { id: res.id };
-      const token = encode(id, SECRET);
+      const user = {
+        id: res.id as number,
+        name: res.name as string,
+        email: res.email as string,
+      };
+      const token = encode(user, SECRET);
       console.log(token);
       console.log(user);
       return token;
@@ -78,8 +93,8 @@ export class UserResolver {
   async resetPassword(
     //@Ctx() ctx: any,
     @Arg("name", { nullable: true }) name: string,
-    @Arg("email", { nullable: true }) email: string
-    //@Arg("password") password: string
+    @Arg("email", { nullable: true }) email: string,
+    @Arg("password") password: string
   ) {
     const user = name ? { name: name } : { email: email };
     const res = await User.findOne({
@@ -91,6 +106,8 @@ export class UserResolver {
       throw new Error("Couldn't find any user");
     }
     try {
+      console.log(password);
+      await User.update(res, { password: password });
       return true;
     } catch (err) {
       console.log(err);

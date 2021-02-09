@@ -8,11 +8,11 @@ import { Post } from "./post";
 @Unique(["name", "email"])
 export class User extends BaseEntity {
   @Field()
-  @Column("text")
+  @Column({ unique: true })
   name: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Field()
