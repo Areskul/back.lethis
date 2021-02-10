@@ -1,9 +1,13 @@
 import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { hash, compare } from "bcryptjs";
-import { encode } from "../middlewares/authPlugin";
-import { sendMail } from "../middlewares/sendMail";
+import { encode, decode } from "../middlewares/authPlugin";
+import {
+  sendResetPasswordMail,
+  sendWelcomeMail,
+} from "../middlewares/sendMail";
 
 import { User } from "../entities/user";
+
 const SECRET = process.env.APP_SECRET as string;
 
 @Resolver()
@@ -48,6 +52,8 @@ export class UserResolver {
       };
       const token = encode(user, SECRET);
       console.log(res);
+      const receivers = [user.email];
+      sendWelcomeMail(user, receivers);
       return token;
     } catch (err) {
       console.log(err);
@@ -91,48 +97,42 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async resetPassword(
-    //@Ctx() ctx: any,
-    @Arg("name", { nullable: true }) name: string,
-    @Arg("email", { nullable: true }) email: string,
+    @Arg("token") token: string,
     @Arg("password") password: string
   ) {
-    const user = name ? { name: name } : { email: email };
-    const res = await User.findOne({
-      select: ["id", "name", "email", "password"],
-      where: user,
-    });
-
-    if (!res) {
-      throw new Error("Couldn't find any user");
-    }
     try {
-      console.log(password);
-      await User.update(res, { password: password });
+      const hashedPassword = await hash(password, 12);
+      const data = token ? await decode(token, SECRET) : undefined;
+      await User.update(data, { password: hashedPassword });
       return true;
     } catch (err) {
       console.log(err);
       return err;
     }
   }
+
   @Mutation(() => Boolean)
   async getResetPasswordToken(
     @Arg("name", { nullable: true }) name: string,
     @Arg("email", { nullable: true }) email: string
   ) {
-    const SECRET = process.env.APP_SECRET2 as string;
-    const user = name ? { name: name } : { email: email };
+    const data = name ? { name: name } : { email: email };
     const res = await User.findOne({
       select: ["id", "name", "email"],
-      where: user,
+      where: data,
     });
     if (!res) {
       throw new Error("Couldn't find any user");
     }
     try {
-      const id = { id: res.id };
-      const token = encode(id, SECRET) as string;
-      const receivers = ["areskul@areskul.com"];
-      sendMail(token, receivers);
+      const user = {
+        id: res.id as number,
+        name: res.name as string,
+        email: res.email as string,
+      };
+      const token = encode(user, SECRET) as string;
+      const receivers = [user.email];
+      sendResetPasswordMail(token, receivers);
       return true;
     } catch (err) {
       console.log(err);

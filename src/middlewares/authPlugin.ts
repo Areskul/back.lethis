@@ -2,7 +2,6 @@ import jwt from "jwt-simple";
 
 export function decode(token: string, secret: string) {
   token = token.replace("Bearer ", "");
-  //token = token.substring(1, token.length - 1);
   const decoded = token ? jwt.decode(token, secret) : "";
   return decoded;
 }
