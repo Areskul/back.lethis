@@ -8,7 +8,11 @@ import {
 } from "typeorm";
 
 @ObjectType()
-@Entity()
+@Entity({
+  orderBy: {
+    createdAt: "DESC",
+  },
+})
 export abstract class BaseEntity extends Base {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
