@@ -13,7 +13,6 @@ import {
 } from "type-graphql";
 //import { BaseEntity } from "typeorm";
 
-import { User } from "../entities/user";
 import { Post } from "../entities/post";
 import { Sort, sorter } from "./base.res";
 
@@ -51,38 +50,6 @@ export class PostResolver {
       const res = await Post.insert(post);
       post = res.identifiers[0] as Post;
       await publish(post);
-      return true;
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
-  }
-  @Mutation(() => Boolean)
-  async likePost(
-    @Ctx() ctx: any,
-    @Arg("post") post: Post
-    //@PubSub("POSTS") publish: Publisher<Post>
-  ) {
-    if (!ctx.user) {
-      throw new Error("Not logged in");
-    }
-    try {
-      const user = await User.findOne({
-        select: ["id", "name", "email"],
-        where: ctx.user,
-      });
-      post = (await Post.findOne({
-        select: ["id", "like"],
-        where: post,
-      })) as Post;
-      const like = post.like.push(user!);
-      console.log(post);
-
-      console.log(like);
-
-      //Post.update(post!, { like: like });
-
-      //await publish(post);
       return true;
     } catch (err) {
       console.log(err);
