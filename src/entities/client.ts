@@ -15,53 +15,53 @@ export class Client extends BaseEntity {
 
   @Field()
   @Column()
-  phone: string;
+  phone?: string;
 
   @Field()
   @Column()
-  email: string;
+  email?: string;
 
   @Field()
   @Column()
-  type: string;
+  type?: string;
 
   @Field()
   @Column()
-  civilite: string;
+  civilite?: string;
 
   @Field()
   @Column()
-  family: string;
+  family?: string;
 
   @Field()
   @Column()
-  birthdate: string;
+  birthdate?: string;
 
   @Field()
   @Column()
-  dependants: string;
+  dependants?: string;
 
   @Field()
   @Column()
-  employees: string;
+  employees?: string;
 
   @Field()
   @Column()
-  job: string;
+  job?: string;
 
   @Field()
   @Column()
-  retirementAge: string;
+  retirementAge?: string;
 
   @Field()
   @Column()
-  adress: string;
+  adress?: string;
 
   @Field()
   @Column()
-  cedex: string;
+  cedex?: string;
 
   @Field()
   @Column()
-  city: string;
+  city?: string;
 }
