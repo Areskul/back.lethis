@@ -9,6 +9,7 @@ import "dotenv/config";
 //Resolvers
 import { UserResolver } from "./resolvers/user.res";
 import { ClientResolver } from "./resolvers/client.res";
+import { PlaceResolver } from "./resolvers/place.res";
 
 const SECRET = process.env.APP_SECRET as string;
 
@@ -18,7 +19,7 @@ const main = async () => {
   const sub_path = "/subscriptions";
   const app = express();
   const schema = await buildSchema({
-    resolvers: [UserResolver, ClientResolver],
+    resolvers: [UserResolver, ClientResolver, PlaceResolver],
     //authMode: "null",
   });
   await createConnection();

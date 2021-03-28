@@ -1,19 +1,29 @@
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { Client } from "../entities/client";
+import { PlaceInput } from "../entities/place";
 
 @Resolver()
 export class ClientResolver {
   @Query(() => Client)
-  async client(@Arg("id") id: number) {
-    if (id) {
-      throw new Error("Couldn't find any user");
-    }
+  async client(@Arg("lastname") lastname: string) {
     try {
       const user = await Client.findOne({
         select: ["id", "lastname", "firstname"],
-        where: { id: id },
+        where: { lastname: lastname },
       });
       return user;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+  @Query(() => [Client])
+  async clients() {
+    try {
+      const clients = await Client.find({
+        select: ["id", "lastname", "firstname"],
+      });
+      return clients;
     } catch (err) {
       console.log(err);
       return err;
@@ -29,13 +39,11 @@ export class ClientResolver {
     @Arg("birthdate", { nullable: true }) birthdate: string,
     @Arg("dependants", { nullable: true }) dependants: string,
     @Arg("employees", { nullable: true }) employees: string,
-    @Arg("city", { nullable: true }) city: string,
-    @Arg("cedex", { nullable: true }) cedex: string,
     @Arg("job", { nullable: true }) job: string,
     @Arg("phone", { nullable: true }) phone: string,
     @Arg("retirementAge", { nullable: true }) retirementAge: string,
     @Arg("family", { nullable: true }) family: string,
-    @Arg("adress", { nullable: true }) adress: string
+    @Arg("place", { nullable: true }) place: PlaceInput
   ) {
     try {
       const data = {
@@ -48,17 +56,16 @@ export class ClientResolver {
         dependants,
         job,
         employees,
-        city,
-        cedex,
         phone,
         retirementAge,
-        adress,
         family,
+        place,
       };
       Client.insert(data);
       const res = await Client.findOne({
         select: ["id", "lastname", "firstname", "email"],
-        where: data,
+        where: { lastname: lastname },
+        //where: data,
       });
       if (!res) {
         throw new Error("Couldn't save client in database");

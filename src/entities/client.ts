@@ -1,9 +1,13 @@
 import { ObjectType, Field } from "type-graphql";
-import { Entity, Column } from "typeorm";
+import { Entity, Column, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base";
 
+import { Place } from "./place";
+
 @ObjectType()
-@Entity("clients")
+@Entity({
+  name: "clients",
+})
 export class Client extends BaseEntity {
   @Field()
   @Column()
@@ -13,55 +17,47 @@ export class Client extends BaseEntity {
   @Column()
   firstname: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   phone?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   email?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   type?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   civilite?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   family?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   birthdate?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   dependants?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   employees?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   job?: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   retirementAge?: string;
 
-  @Field()
-  @Column()
-  adress?: string;
-
-  @Field()
-  @Column()
-  cedex?: string;
-
-  @Field()
-  @Column()
-  city?: string;
+  @Field(() => Place, { nullable: true })
+  @ManyToOne(() => Place, (place) => place.clients)
+  place: Place;
 }
