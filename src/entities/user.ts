@@ -1,7 +1,12 @@
 import { ObjectType, Field } from "type-graphql";
-import { Entity, Column, OneToMany, ManyToMany, Unique } from "typeorm";
+import {
+  Entity,
+  Column,
+  //ManyToMany,
+  Unique,
+} from "typeorm";
 import { BaseEntity } from "./base";
-import { Post } from "./post";
+//import { Client } from "./client";
 
 @ObjectType()
 @Entity("users")
@@ -19,15 +24,8 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Field(() => [Post])
-  @OneToMany(() => Post, (post) => post.user)
-  posts: Post[];
-
-  @Field(() => [Post])
-  @ManyToMany(() => Post)
-  like: Post[];
-
-  @Field(() => [Post])
-  @ManyToMany(() => Post)
-  dislike: Post[];
+  //@Field(() => [Client])
+  //@ManyToMany(() => Client)
+  //@JoinTable()
+  //clients: Client[];
 }
