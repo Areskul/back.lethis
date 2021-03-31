@@ -4,7 +4,7 @@ export const resetPasswordHtml = (token: string) => {
   const html =
     `
 <div class="gradient"></div>
-  <h1 class="banner">POC</h1>
+  <h1 class="banner">Lethis</h1>
   <div class="body">
   <h2>Nouveau mot de passe</h2>
   <p>Vous pouvez renouveler votre mot de passe en cliquant sur
