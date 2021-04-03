@@ -36,7 +36,7 @@ export class UserResolver {
   ) {
     try {
       const hashedPassword = await hash(password, 12);
-      const data = { name, email, password: hashedPassword };
+      const data = { name: name, email: email, password: hashedPassword };
       User.insert(data);
       const res = await User.findOne({
         select: ["id", "name", "email", "password"],
