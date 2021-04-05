@@ -20,9 +20,7 @@ export class ClientResolver {
   @Query(() => [Client])
   async clients() {
     try {
-      const clients = await Client.find({
-        select: ["id", "lastname", "firstname"],
-      });
+      const clients = await Client.find();
       return clients;
     } catch (err) {
       console.log(err);
@@ -47,19 +45,19 @@ export class ClientResolver {
   ) {
     try {
       const data = {
-        lastname,
-        firstname,
-        email,
-        type,
-        civilite,
-        birthdate,
-        dependants,
-        job,
-        employees,
-        phone,
-        retirementAge,
-        family,
-        place,
+        lastname: lastname,
+        firstname: firstname,
+        email: email,
+        type: type,
+        civilite: civilite,
+        birthdate: birthdate,
+        dependants: dependants,
+        job: job,
+        employees: employees,
+        phone: phone,
+        retirementAge: retirementAge,
+        family: family,
+        place: place,
       };
       Client.insert(data);
       const res = await Client.findOne({
