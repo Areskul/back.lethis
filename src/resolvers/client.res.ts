@@ -29,6 +29,7 @@ export class ClientResolver {
   }
   @Mutation(() => Boolean)
   async createClient(
+    @Arg("id", { nullable: true }) id: number,
     @Arg("lastname") lastname: string,
     @Arg("firstname") firstname: string,
     @Arg("email", { nullable: true }) email: string,
@@ -43,6 +44,15 @@ export class ClientResolver {
     @Arg("family", { nullable: true }) family: string,
     @Arg("place", { nullable: true }) place: PlaceInput
   ) {
+    try {
+      Client.findOne({
+        select: ["id", "lastname", "firstname", "email"],
+        where: { id: id, lastname: lastname, firstname: firstname },
+      });
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
     try {
       const data = {
         lastname: lastname,
