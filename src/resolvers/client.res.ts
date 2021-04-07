@@ -44,31 +44,32 @@ export class ClientResolver {
     @Arg("family", { nullable: true }) family: string,
     @Arg("place", { nullable: true }) place: PlaceInput
   ) {
+    const data = {
+      lastname: lastname,
+      firstname: firstname,
+      email: email,
+      type: type,
+      civilite: civilite,
+      birthdate: birthdate,
+      dependants: dependants,
+      job: job,
+      employees: employees,
+      phone: phone,
+      retirementAge: retirementAge,
+      family: family,
+      place: place,
+    };
     try {
-      Client.findOne({
+      const client = Client.findOne({
         select: ["id", "lastname", "firstname", "email"],
         where: { id: id, lastname: lastname, firstname: firstname },
       });
+      Client.update(client as Object, data);
     } catch (err) {
       console.log(err);
       return err;
     }
     try {
-      const data = {
-        lastname: lastname,
-        firstname: firstname,
-        email: email,
-        type: type,
-        civilite: civilite,
-        birthdate: birthdate,
-        dependants: dependants,
-        job: job,
-        employees: employees,
-        phone: phone,
-        retirementAge: retirementAge,
-        family: family,
-        place: place,
-      };
       Client.insert(data);
       const res = await Client.findOne({
         select: ["id", "lastname", "firstname", "email"],
