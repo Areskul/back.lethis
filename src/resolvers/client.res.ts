@@ -29,9 +29,56 @@ export class ClientResolver {
   }
   @Mutation(() => Boolean)
   async createClient(
-    @Arg("id", { nullable: true }) id: number,
     @Arg("lastname") lastname: string,
     @Arg("firstname") firstname: string,
+    @Arg("email", { nullable: true }) email: string,
+    @Arg("type", { nullable: true }) type: string,
+    @Arg("civilite", { nullable: true }) civilite: string,
+    @Arg("birthdate", { nullable: true }) birthdate: string,
+    @Arg("dependants", { nullable: true }) dependants: string,
+    @Arg("employees", { nullable: true }) employees: string,
+    @Arg("job", { nullable: true }) job: string,
+    @Arg("phone", { nullable: true }) phone: string,
+    @Arg("retirementAge", { nullable: true }) retirementAge: string,
+    @Arg("family", { nullable: true }) family: string,
+    @Arg("place", { nullable: true }) place: PlaceInput
+  ) {
+    try {
+      const data = {
+        lastname: lastname,
+        firstname: firstname,
+        email: email,
+        type: type,
+        civilite: civilite,
+        birthdate: birthdate,
+        dependants: dependants,
+        job: job,
+        employees: employees,
+        phone: phone,
+        retirementAge: retirementAge,
+        family: family,
+        place: place,
+      };
+      Client.insert(data);
+      const res = await Client.findOne({
+        select: ["id", "lastname", "firstname", "email"],
+        where: { firstname: firstname, lastname: lastname },
+        //where: data,
+      });
+      if (!res) {
+        throw new Error("Couldn't save client in database");
+      }
+      return true;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+  @Mutation(() => Boolean)
+  async updateClient(
+    @Arg("id") id: string,
+    @Arg("lastname", { nullable: true }) lastname: string,
+    @Arg("firstname", { nullable: true }) firstname: string,
     @Arg("email", { nullable: true }) email: string,
     @Arg("type", { nullable: true }) type: string,
     @Arg("civilite", { nullable: true }) civilite: string,
@@ -60,26 +107,25 @@ export class ClientResolver {
       place: place,
     };
     try {
-      const client = Client.findOne({
-        select: ["id", "lastname", "firstname", "email"],
-        where: { id: id, lastname: lastname, firstname: firstname },
+      const client = await Client.findOne({
+        where: { id: parseInt(id) },
       });
-      Client.update(client as Object, data);
+      Client.update(id, data);
+      return true;
     } catch (err) {
       console.log(err);
       return err;
     }
+  }
+  async deleteClient(@Arg("id") id: string) {
     try {
-      Client.insert(data);
-      const res = await Client.findOne({
-        select: ["id", "lastname", "firstname", "email"],
-        where: { lastname: lastname },
-        //where: data,
+      const client = await Client.findOne({
+        select: ["id", "lastname", "firstname"],
+        where: { id: id },
       });
-      if (!res) {
-        throw new Error("Couldn't save client in database");
-      }
-      return true;
+      Client.delete({ id: parseInt(id) });
+      Client;
+      return client;
     } catch (err) {
       console.log(err);
       return err;
