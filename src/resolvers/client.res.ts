@@ -27,7 +27,7 @@ export class ClientResolver {
       return err;
     }
   }
-  @Mutation(() => Boolean)
+  @Mutation(() => Client)
   async createClient(
     @Arg("lastname") lastname: string,
     @Arg("firstname") firstname: string,
@@ -68,13 +68,13 @@ export class ClientResolver {
       if (!res) {
         throw new Error("Couldn't save client in database");
       }
-      return true;
+      return res;
     } catch (err) {
       console.log(err);
       return err;
     }
   }
-  @Mutation(() => Boolean)
+  @Mutation(() => Client)
   async updateClient(
     @Arg("id") id: string,
     @Arg("lastname", { nullable: true }) lastname: string,
@@ -107,11 +107,11 @@ export class ClientResolver {
       place: place,
     };
     try {
-      const client = await Client.findOne({
+      await Client.findOne({
         where: { id: parseInt(id) },
       });
-      Client.update(id, data);
-      return true;
+      const client = Client.update(id, data);
+      return client;
     } catch (err) {
       console.log(err);
       return err;
@@ -124,7 +124,6 @@ export class ClientResolver {
         where: { id: id },
       });
       Client.delete({ id: parseInt(id) });
-      Client;
       return client;
     } catch (err) {
       console.log(err);
