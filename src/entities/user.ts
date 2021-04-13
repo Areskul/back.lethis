@@ -24,6 +24,8 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
+  @Field()
+  token: string;
   //@Field(() => [Client])
   //@ManyToMany(() => Client)
   //@JoinTable()

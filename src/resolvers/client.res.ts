@@ -5,13 +5,23 @@ import { PlaceInput } from "../entities/place";
 @Resolver()
 export class ClientResolver {
   @Query(() => Client)
-  async client(@Arg("lastname") lastname: string) {
+  async client(
+    @Arg("id", { nullable: true }) id: string,
+    @Arg("lastname", { nullable: true }) lastname: string,
+    @Arg("firstname", { nullable: true }) firstname: string
+  ) {
     try {
-      const user = await Client.findOne({
-        select: ["id", "lastname", "firstname"],
-        where: { lastname: lastname },
+      if (!id) {
+        throw new Error("No id provided");
+      }
+      const client = await Client.findOne({
+        where: [
+          { id: parseInt(id) },
+          { lastname: lastname },
+          { firstname: firstname },
+        ],
       });
-      return user;
+      return client;
     } catch (err) {
       console.log(err);
       return err;
@@ -44,6 +54,11 @@ export class ClientResolver {
     @Arg("place", { nullable: true }) place: PlaceInput
   ) {
     try {
+      if (!lastname || !firstname) {
+        throw new Error(
+          "lastname and firstname can't be null or empty strings"
+        );
+      }
       const data = {
         lastname: lastname,
         firstname: firstname,
@@ -61,9 +76,7 @@ export class ClientResolver {
       };
       Client.insert(data);
       const res = await Client.findOne({
-        select: ["id", "lastname", "firstname", "email"],
         where: { firstname: firstname, lastname: lastname },
-        //where: data,
       });
       if (!res) {
         throw new Error("Couldn't save client in database");
@@ -107,10 +120,10 @@ export class ClientResolver {
       place: place,
     };
     try {
-      await Client.findOne({
+      await Client.update(id, data);
+      const client = await Client.findOne({
         where: { id: parseInt(id) },
       });
-      const client = Client.update(id, data);
       return client;
     } catch (err) {
       console.log(err);

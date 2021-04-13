@@ -86,8 +86,8 @@ export class UserResolver {
         email: res.email as string,
       };
       const token = encode(user, SECRET);
-      console.log(token);
       console.log(user);
+      console.log(token);
       return token;
     } catch (err) {
       console.log(err);
