@@ -3,6 +3,7 @@ import { Entity, Column, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base";
 
 import { Place } from "./place";
+import { User } from "./user";
 
 @ObjectType()
 @Entity({
@@ -60,4 +61,8 @@ export class Client extends BaseEntity {
   @Field(() => Place, { nullable: true })
   @ManyToOne(() => Place, (place) => place.clients)
   place: Place;
+
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.clients)
+  user: User;
 }

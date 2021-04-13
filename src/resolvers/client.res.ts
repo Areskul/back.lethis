@@ -1,6 +1,7 @@
-import { Resolver, Query, Arg, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { Client } from "../entities/client";
 import { PlaceInput } from "../entities/place";
+import { User } from "../entities/user";
 
 @Resolver()
 export class ClientResolver {
@@ -11,9 +12,6 @@ export class ClientResolver {
     @Arg("firstname", { nullable: true }) firstname: string
   ) {
     try {
-      if (!id) {
-        throw new Error("No id provided");
-      }
       const client = await Client.findOne({
         where: [
           { id: parseInt(id) },
@@ -39,6 +37,7 @@ export class ClientResolver {
   }
   @Mutation(() => Client)
   async createClient(
+    @Ctx() ctx: any,
     @Arg("lastname") lastname: string,
     @Arg("firstname") firstname: string,
     @Arg("email", { nullable: true }) email: string,
@@ -59,6 +58,10 @@ export class ClientResolver {
           "lastname and firstname can't be null or empty strings"
         );
       }
+      const user = await User.findOne({
+        select: ["id", "name", "email"],
+        where: ctx.user,
+      });
       const data = {
         lastname: lastname,
         firstname: firstname,
@@ -73,6 +76,7 @@ export class ClientResolver {
         retirementAge: retirementAge,
         family: family,
         place: place,
+        user: user,
       };
       Client.insert(data);
       const res = await Client.findOne({
@@ -104,6 +108,9 @@ export class ClientResolver {
     @Arg("family", { nullable: true }) family: string,
     @Arg("place", { nullable: true }) place: PlaceInput
   ) {
+    if (!id) {
+      throw new Error("No id provided");
+    }
     const data = {
       lastname: lastname,
       firstname: firstname,
