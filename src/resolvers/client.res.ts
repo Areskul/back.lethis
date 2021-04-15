@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
-import { Client } from "../entities/client";
+import { Gender, Client } from "../entities/client";
 import { PlaceInput } from "../entities/place";
 import { User } from "../entities/user";
 
@@ -40,9 +40,9 @@ export class ClientResolver {
     @Ctx() ctx: any,
     @Arg("lastname") lastname: string,
     @Arg("firstname") firstname: string,
+    @Arg("gender", { nullable: true }) gender: Gender,
     @Arg("email", { nullable: true }) email: string,
     @Arg("type", { nullable: true }) type: string,
-    @Arg("civilite", { nullable: true }) civilite: string,
     @Arg("birthdate", { nullable: true }) birthdate: string,
     @Arg("dependants", { nullable: true }) dependants: string,
     @Arg("employees", { nullable: true }) employees: string,
@@ -65,9 +65,9 @@ export class ClientResolver {
       const data = {
         lastname: lastname,
         firstname: firstname,
+        gender: gender,
         email: email,
         type: type,
-        civilite: civilite,
         birthdate: birthdate,
         dependants: dependants,
         job: job,
@@ -96,9 +96,9 @@ export class ClientResolver {
     @Arg("id") id: string,
     @Arg("lastname", { nullable: true }) lastname: string,
     @Arg("firstname", { nullable: true }) firstname: string,
+    @Arg("gender", { nullable: true }) gender: Gender,
     @Arg("email", { nullable: true }) email: string,
     @Arg("type", { nullable: true }) type: string,
-    @Arg("civilite", { nullable: true }) civilite: string,
     @Arg("birthdate", { nullable: true }) birthdate: string,
     @Arg("dependants", { nullable: true }) dependants: string,
     @Arg("employees", { nullable: true }) employees: string,
@@ -116,7 +116,7 @@ export class ClientResolver {
       firstname: firstname,
       email: email,
       type: type,
-      civilite: civilite,
+      gender: gender,
       birthdate: birthdate,
       dependants: dependants,
       job: job,
@@ -150,4 +150,5 @@ export class ClientResolver {
       return err;
     }
   }
+  //@Column({ nullable: true })
 }

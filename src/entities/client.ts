@@ -1,21 +1,32 @@
-import { ObjectType, Field } from "type-graphql";
-import { Entity, Column, ManyToOne } from "typeorm";
+import { ObjectType, Field, registerEnumType } from "type-graphql";
+import { Entity, Column, ManyToOne, Unique } from "typeorm";
 import { BaseEntity } from "./base";
 
 import { Place } from "./place";
 import { User } from "./user";
 
+export enum Gender {
+  Male = "Monsieur",
+  Female = "Madame",
+}
+
+registerEnumType(Gender, {
+  name: "Gender",
+  description: "The basic directions",
+});
+
 @ObjectType()
 @Entity({
   name: "clients",
 })
+@Unique(["lastname", "firstname"])
 export class Client extends BaseEntity {
   @Field()
-  @Column()
+  @Column({ name: "lastname" })
   lastname: string;
 
   @Field()
-  @Column()
+  @Column({ name: "firstname" })
   firstname: string;
 
   @Field({ nullable: true })
@@ -30,9 +41,9 @@ export class Client extends BaseEntity {
   @Column({ nullable: true })
   type?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Gender)
   @Column({ nullable: true })
-  civilite?: string;
+  gender?: Gender;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
