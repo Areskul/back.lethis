@@ -52,32 +52,43 @@ export class ClientResolver {
     @Arg("family", { nullable: true }) family: string,
     @Arg("place", { nullable: true }) place: PlaceInput
   ) {
+    const user = await User.findOne({
+      select: ["id", "name", "email"],
+      where: ctx.user,
+    });
+    const data = {
+      lastname: lastname,
+      firstname: firstname,
+      gender: gender,
+      email: email,
+      type: type,
+      birthdate: birthdate,
+      dependants: dependants,
+      job: job,
+      employees: employees,
+      phone: phone,
+      retirementAge: retirementAge,
+      family: family,
+      place: place,
+      user: user,
+    };
+    try {
+      const exist = await Client.findOne({
+        where: { firstname: firstname, lastname: lastname },
+      });
+      if (exist) {
+        throw new Error("Client already exists in database");
+      }
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
     try {
       if (!lastname || !firstname) {
         throw new Error(
           "lastname and firstname can't be null or empty strings"
         );
       }
-      const user = await User.findOne({
-        select: ["id", "name", "email"],
-        where: ctx.user,
-      });
-      const data = {
-        lastname: lastname,
-        firstname: firstname,
-        gender: gender,
-        email: email,
-        type: type,
-        birthdate: birthdate,
-        dependants: dependants,
-        job: job,
-        employees: employees,
-        phone: phone,
-        retirementAge: retirementAge,
-        family: family,
-        place: place,
-        user: user,
-      };
       Client.insert(data);
       const res = await Client.findOne({
         where: { firstname: firstname, lastname: lastname },

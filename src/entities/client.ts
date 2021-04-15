@@ -6,8 +6,8 @@ import { Place } from "./place";
 import { User } from "./user";
 
 export enum Gender {
-  Male = "Monsieur",
-  Female = "Madame",
+  Monsieur = "Monsieur",
+  Madame = "Madame",
 }
 
 registerEnumType(Gender, {
