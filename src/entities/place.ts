@@ -32,10 +32,8 @@ export class PlaceInput implements Partial<Place> {
   adress?: string;
 
   @Field()
-  @Column()
   cedex?: string;
 
   @Field()
-  @Column()
   city?: string;
 }

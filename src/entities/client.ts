@@ -4,6 +4,7 @@ import { BaseEntity } from "./base";
 
 import { Place } from "./place";
 import { User } from "./user";
+import { Job } from "./job";
 
 export enum Gender {
   Monsieur = "Monsieur",
@@ -63,10 +64,6 @@ export class Client extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  job?: string;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
   retirementAge?: string;
 
   @Field(() => Place, { nullable: true })
@@ -76,4 +73,8 @@ export class Client extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.clients)
   user: User;
+
+  @Field(() => Job, { nullable: true })
+  @ManyToOne(() => Job, (job) => job.clients)
+  job: Job;
 }

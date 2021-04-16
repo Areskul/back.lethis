@@ -2,6 +2,9 @@ import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { Gender, Client } from "../entities/client";
 import { PlaceInput } from "../entities/place";
 import { User } from "../entities/user";
+import { JobResolver } from "./job.res";
+
+const jobRes = new JobResolver();
 
 @Resolver()
 export class ClientResolver {
@@ -28,7 +31,12 @@ export class ClientResolver {
   @Query(() => [Client])
   async clients() {
     try {
-      const clients = await Client.find();
+      const clients = await Client.find({
+        order: {
+          lastname: "ASC",
+          firstname: "DESC",
+        },
+      });
       return clients;
     } catch (err) {
       console.log(err);
@@ -64,7 +72,6 @@ export class ClientResolver {
       type: type,
       birthdate: birthdate,
       dependants: dependants,
-      job: job,
       employees: employees,
       phone: phone,
       retirementAge: retirementAge,
@@ -89,6 +96,7 @@ export class ClientResolver {
           "lastname and firstname can't be null or empty strings"
         );
       }
+      jobRes.createJob(job);
       Client.insert(data);
       const res = await Client.findOne({
         where: { firstname: firstname, lastname: lastname },
@@ -130,7 +138,6 @@ export class ClientResolver {
       gender: gender,
       birthdate: birthdate,
       dependants: dependants,
-      job: job,
       employees: employees,
       phone: phone,
       retirementAge: retirementAge,
@@ -142,6 +149,9 @@ export class ClientResolver {
       const client = await Client.findOne({
         where: { id: parseInt(id) },
       });
+      const res = jobRes.createJob(job);
+      console.log(res);
+
       return client;
     } catch (err) {
       console.log(err);
