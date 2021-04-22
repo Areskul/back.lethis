@@ -19,6 +19,20 @@ export class JobResolver {
       return err;
     }
   }
+  @Query(() => [Job])
+  async jobs() {
+    try {
+      const jobs = await Job.find({
+        order: {
+          name: "ASC",
+        },
+      });
+      return jobs;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
   @Mutation(() => Boolean)
   async createJob(@Arg("name") name: string) {
     const data = {
@@ -29,7 +43,7 @@ export class JobResolver {
         where: data,
       });
       if (exist) {
-        throw new Error("Client already exists in database");
+        throw new Error("Job already exists in database");
       }
     } catch (err) {
       console.log(err);

@@ -9,6 +9,7 @@ import {
 
 @ObjectType()
 @Entity({
+  name: "base",
   orderBy: {
     createdAt: "DESC",
   },
