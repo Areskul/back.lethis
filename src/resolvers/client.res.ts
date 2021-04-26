@@ -149,9 +149,10 @@ export class ClientResolver {
       const client = await Client.findOne({
         where: { id: parseInt(id) },
       });
-      const res = job ? jobRes.createJob(job) : false;
-      console.log(res);
-
+      const res = job ? await jobRes.createJob(job) : false;
+      if (!res) {
+        throw new Error("couldn't create Job");
+      }
       return client;
     } catch (err) {
       console.log(err);
