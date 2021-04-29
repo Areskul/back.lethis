@@ -13,13 +13,18 @@ const transporter = createTransport({
 });
 
 export const sendMail = async (html: string, receivers: string[]) => {
-  await transporter.sendMail({
-    from: '"Areskul" <service@areskul.com>', // sender address
-    to: receivers, // list of receivers
-    subject: "Hello", // Subject line
-    text: "Hello world?", // plain text body
-    html: html,
-  });
+  try {
+    await transporter.sendMail({
+      from: '"Areskul" <service@areskul.com>', // sender address
+      to: receivers, // list of receivers
+      subject: "Hello", // Subject line
+      text: "Hello world?", // plain text body
+      html: html,
+    });
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
 
 export const sendResetPasswordMail = async (

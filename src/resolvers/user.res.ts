@@ -62,15 +62,14 @@ export class UserResolver {
   }
   @Query(() => String, { nullable: true })
   async loginUser(
-    @Arg("name", { nullable: true }) name: string,
     @Arg("email", { nullable: true }) email: string,
     @Arg("password") password: string
   ) {
     try {
-      const data = name ? { name: name } : { email: email };
+      const condition = [{ name: email }, { email: email }];
       const res = await User.findOne({
         select: ["id", "name", "email", "password"],
-        where: data,
+        where: condition,
       });
 
       if (!res) {
