@@ -96,7 +96,6 @@ export class ClientResolver {
           "lastname and firstname can't be null or empty strings"
         );
       }
-      jobRes.createJob(job);
       Client.insert(data);
       const res = await Client.findOne({
         where: { firstname: firstname, lastname: lastname },
