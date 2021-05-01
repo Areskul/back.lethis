@@ -2,9 +2,9 @@ import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { Gender, Client } from "../entities/client";
 import { PlaceInput } from "../entities/place";
 import { User } from "../entities/user";
-import { JobResolver } from "./job.res";
+//import { JobResolver } from "./job.res";
 
-const jobRes = new JobResolver();
+//const jobRes = new JobResolver();
 
 @Resolver()
 export class ClientResolver {
@@ -54,7 +54,7 @@ export class ClientResolver {
     @Arg("birthdate", { nullable: true }) birthdate: string,
     @Arg("dependants", { nullable: true }) dependants: string,
     @Arg("employees", { nullable: true }) employees: string,
-    @Arg("job", { nullable: true }) job: string,
+    //@Arg("job", { nullable: true }) job: string,
     @Arg("phone", { nullable: true }) phone: string,
     @Arg("retirementAge", { nullable: true }) retirementAge: string,
     @Arg("family", { nullable: true }) family: string,
@@ -120,7 +120,7 @@ export class ClientResolver {
     @Arg("birthdate", { nullable: true }) birthdate: string,
     @Arg("dependants", { nullable: true }) dependants: string,
     @Arg("employees", { nullable: true }) employees: string,
-    @Arg("job", { nullable: true }) job: string,
+    //@Arg("job", { nullable: true }) job: string,
     @Arg("phone", { nullable: true }) phone: string,
     @Arg("retirementAge", { nullable: true }) retirementAge: string,
     @Arg("family", { nullable: true }) family: string,
@@ -148,10 +148,10 @@ export class ClientResolver {
       const client = await Client.findOne({
         where: { id: parseInt(id) },
       });
-      const res = job ? await jobRes.createJob(job) : false;
-      if (!res) {
-        throw new Error("couldn't create Job");
-      }
+      //const res = job ? await jobRes.createJob(job) : false;
+      //if (!res) {
+      //throw new Error("couldn't create Job");
+      //}
       return client;
     } catch (err) {
       console.log(err);

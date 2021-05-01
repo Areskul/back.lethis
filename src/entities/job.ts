@@ -6,7 +6,7 @@ import { Client } from "./client";
 
 @ObjectType()
 @Entity({
-  name: "job",
+  name: "jobs",
 })
 @Unique(["name"])
 export class Job extends BaseEntity {
