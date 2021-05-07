@@ -17,7 +17,7 @@ import {
 export abstract class BaseEntity extends Base {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
   @Field()
   @CreateDateColumn({
     type: "timestamp",

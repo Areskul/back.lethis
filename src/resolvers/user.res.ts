@@ -46,7 +46,7 @@ export class UserResolver {
         throw new Error("Couldn't register user");
       }
       const user = {
-        id: res.id as number,
+        id: res.id,
         name: res.name as string,
         email: res.email as string,
       };
@@ -80,7 +80,7 @@ export class UserResolver {
         throw new Error("Bad password");
       }
       const user = {
-        id: res.id as number,
+        id: res.id,
         name: res.name as string,
         email: res.email as string,
       };
@@ -125,7 +125,7 @@ export class UserResolver {
     }
     try {
       const user = {
-        id: res.id as number,
+        id: res.id,
         name: res.name as string,
         email: res.email as string,
       };
