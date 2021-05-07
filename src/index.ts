@@ -5,12 +5,17 @@ import { ApolloServer } from "apollo-server-express";
 import { createConnection } from "typeorm";
 import { createServer } from "http";
 import { decode } from "./middlewares/authPlugin";
-import "dotenv/config";
 //Resolvers
 import { UserResolver } from "./resolvers/user.res";
 import { ClientResolver } from "./resolvers/client.res";
 import { PlaceResolver } from "./resolvers/place.res";
 import { JobResolver } from "./resolvers/job.res";
+
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`),
+});
 
 const SECRET = process.env.APP_SECRET as string;
 
