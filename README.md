@@ -1,5 +1,8 @@
 # POC back
 
-## Techno
 
+## Techno
 Typegraph and TypeORM on top of graphql + appolo  on top of postgres database
+
+##Beware
+Ther is many Relation
