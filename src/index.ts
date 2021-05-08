@@ -12,12 +12,10 @@ import { PlaceResolver } from "./resolvers/place.res";
 import { JobResolver } from "./resolvers/job.res";
 
 import path from "path";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 dotenv.config({
   path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
-
-const SECRET = process.env.APP_SECRET as string;
 
 const main = async () => {
   const PORT = process.env.PORT!;
@@ -39,7 +37,8 @@ const main = async () => {
         return connection.context;
       } else {
         const token = req.headers.authorization!;
-        const user = token ? await decode(token, SECRET) : undefined;
+        const APP_SECRET = process.env.APP_SECRET as string;
+        const user = token ? await decode(token, APP_SECRET) : undefined;
         const context = {
           req,
           user: user,

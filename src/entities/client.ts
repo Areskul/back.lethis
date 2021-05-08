@@ -10,10 +10,19 @@ export enum Gender {
   Monsieur = "Monsieur",
   Madame = "Madame",
 }
-
 registerEnumType(Gender, {
   name: "Gender",
-  description: "The basic directions",
+  description: "The basic genders",
+});
+export enum Family {
+  Celibataire = "Celibataire",
+  Paxe = "Paxe",
+  Marie = "Marie",
+  Veuf = "Veuf",
+}
+registerEnumType(Family, {
+  name: "Family",
+  description: "Family situation",
 });
 
 @ObjectType()
@@ -46,23 +55,23 @@ export class Client extends BaseEntity {
   @Column({ nullable: true })
   gender?: Gender;
 
-  @Field({ nullable: true })
+  @Field(() => Family, { nullable: true })
   @Column({ nullable: true })
-  family?: string;
+  family?: Family;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
   birthdate?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   dependants?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   employees?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   retirementAge?: string;
 

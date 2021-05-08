@@ -8,8 +8,6 @@ import {
 
 import { User } from "../entities/user";
 
-const SECRET = process.env.APP_SECRET as string;
-
 @Resolver()
 export class UserResolver {
   @Query(() => User)
@@ -50,6 +48,7 @@ export class UserResolver {
         name: res.name as string,
         email: res.email as string,
       };
+      const SECRET = process.env.APP_SECRET as string;
       const token = encode(user, SECRET);
       console.log(res);
       const receivers = [user.email];
@@ -84,6 +83,7 @@ export class UserResolver {
         name: res.name as string,
         email: res.email as string,
       };
+      const SECRET = process.env.APP_SECRET as string;
       const token = encode(user, SECRET);
       console.log(user);
       console.log(token);
@@ -100,6 +100,7 @@ export class UserResolver {
     @Arg("password") password: string
   ) {
     try {
+      const SECRET = process.env.APP_SECRET as string;
       const hashedPassword = await hash(password, 12);
       const data = token ? await decode(token, SECRET) : undefined;
       await User.update(data, { password: hashedPassword });
@@ -129,6 +130,7 @@ export class UserResolver {
         name: res.name as string,
         email: res.email as string,
       };
+      const SECRET = process.env.APP_SECRET as string;
       const token = encode(user, SECRET) as string;
       const receivers = [user.email];
       sendResetPasswordMail(token, receivers);

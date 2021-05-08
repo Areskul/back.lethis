@@ -7,39 +7,56 @@ import {
 } from "type-graphql";
 import { Client } from "../entities/client";
 import { ClientInput } from "../types/client-input";
+import { Job } from "../entities/job";
+import { JobInput } from "../types/job-input";
 //import { PlaceInput } from "../types/place-input";
 //import { User } from "../entities/user";
-//import { JobResolver } from "./job.res";
 
 //const jobRes = new JobResolver();
 
 @Resolver()
 export class ClientResolver {
   @Query(() => Client)
-  async client(@Arg("id", { nullable: true }) id: string) {
+  async client(@Arg("id") id: string) {
     return Client.findOne(id);
   }
   @Query(() => [Client])
   async clients() {
-    try {
-      const clients = await Client.find({
-        order: {
-          lastname: "ASC",
-          firstname: "DESC",
-        },
-      });
-      return clients;
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
+    return Client.find({
+      order: {
+        lastname: "ASC",
+        firstname: "DESC",
+      },
+    });
   }
   @Mutation(() => Client)
-  async updateClient(@Arg("client") data: ClientInput) {
-    const client = Client.create(data);
-    data.id ? await Client.update(data.id, client) : await Client.save(client);
-    const cond = data.id ? { id: data.id } : data;
-    return Client.findOne(cond);
+  async updateClient(
+    @Arg("client") clientInput: ClientInput,
+    @Arg("job", { nullable: true }) jobInput: JobInput
+  ) {
+    const clientData = Client.create(clientInput);
+    const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
+    clientInput.id
+      ? await Client.update(clientInput.id, clientData)
+      : await Client.save(clientData);
+    let client = await Client.findOne({
+      where: clientCond,
+      relations: ["job"],
+    });
+
+    if (jobInput && jobInput.name) {
+      console.log(jobInput);
+      const jobData = Job.create(jobInput);
+      jobInput.id
+        ? await Job.update(jobInput.id, jobData)
+        : await Job.save(jobData);
+      const jobCond = clientInput.id ? { id: clientInput.id } : clientInput;
+      const job = await Job.findOne(jobCond);
+      client!.job = job!;
+      client = await Client.save(client!);
+    }
+
+    return client;
   }
 
   async deleteClient(@Arg("id") id: string) {
