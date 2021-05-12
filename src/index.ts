@@ -50,6 +50,7 @@ const main = async () => {
   const ws = createServer(app);
   server.applyMiddleware({ app: app, path: path });
   server.installSubscriptionHandlers(ws);
+  //ws.listen({ port: PORT, url: "192.168.0.100" });
   ws.listen(PORT, () => {
     console.log(
       `Server ready at http://localhost:${PORT}${server.graphqlPath}`
