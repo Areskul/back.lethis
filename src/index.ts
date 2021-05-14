@@ -17,6 +17,8 @@ dotenv.config({
   path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`),
 });
 
+//import { seedDatabase } from "./seed";
+
 const main = async () => {
   const PORT = process.env.PORT!;
   const path = "/graphql";
@@ -47,6 +49,8 @@ const main = async () => {
       }
     },
   });
+  //await seedDatabase();
+
   const ws = createServer(app);
   server.applyMiddleware({ app: app, path: path });
   server.installSubscriptionHandlers(ws);
