@@ -1,5 +1,5 @@
 import { ObjectType, Field, registerEnumType } from "type-graphql";
-import { Entity, Column, ManyToOne, Unique } from "typeorm";
+import { Entity, Column, ManyToOne, OneToOne, Unique } from "typeorm";
 import { BaseEntity } from "./base";
 
 import { Place } from "./place";
@@ -76,7 +76,7 @@ export class Client extends BaseEntity {
   retirementAge?: string;
 
   @Field(() => Place, { nullable: true })
-  @ManyToOne(() => Place, (place) => place.clients)
+  @OneToOne(() => Place, (place) => place.client)
   place: Place;
 
   @Field(() => User)

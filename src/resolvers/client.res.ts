@@ -10,7 +10,8 @@ import { ClientInput } from "../types/client-input";
 import { getConnection } from "typeorm";
 import { Job } from "../entities/job";
 import { JobInput } from "../types/job-input";
-//import { PlaceInput } from "../types/place-input";
+import { Place } from "../entities/place";
+import { PlaceInput } from "../types/place-input";
 //import { User } from "../entities/user";
 
 //const jobRes = new JobResolver();
@@ -39,7 +40,8 @@ export class ClientResolver {
   @Mutation(() => Client)
   async updateClient(
     @Arg("client") clientInput: ClientInput,
-    @Arg("job", { nullable: true }) jobInput: JobInput
+    @Arg("job", { nullable: true }) jobInput: JobInput,
+    @Arg("place", { nullable: true }) placeInput: PlaceInput
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
@@ -50,7 +52,7 @@ export class ClientResolver {
 
     let client = await Client.findOne({
       where: clientCond,
-      relations: ["job"],
+      relations: ["job", "place"],
     });
 
     if (jobInput) {
@@ -65,7 +67,25 @@ export class ClientResolver {
     }
     client = await Client.findOne({
       where: clientCond,
-      relations: ["job"],
+      relations: ["job", "place"],
+    });
+
+    if (placeInput) {
+      let place = await Place.findOne({
+        where: placeInput,
+      });
+      if (!place) {
+        place = await Place.save(Place.create(placeInput));
+      }
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "place")
+        .of(client)
+        .set(place);
+    }
+    client = await Client.findOne({
+      where: clientCond,
+      relations: ["job", "place"],
     });
 
     return client;
