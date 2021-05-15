@@ -31,6 +31,7 @@ const main = async () => {
   await createConnection();
   const server = new ApolloServer({
     schema,
+    introspection: true,
     subscriptions: {
       path: sub_path,
     },
