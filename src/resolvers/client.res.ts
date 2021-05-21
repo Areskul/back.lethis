@@ -26,7 +26,7 @@ export class ClientResolver {
       where: {
         id: id,
       },
-      relations: ["job"],
+      relations: ["job", "place", "incomes"],
     });
   }
   @Query(() => [Client])
@@ -36,7 +36,7 @@ export class ClientResolver {
         lastname: "ASC",
         firstname: "DESC",
       },
-      relations: ["job"],
+      relations: ["job", "place", "incomes"],
     });
   }
   @Mutation(() => Client)
