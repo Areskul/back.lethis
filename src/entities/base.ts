@@ -15,16 +15,16 @@ import {
   },
 })
 export abstract class BaseEntity extends Base {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   @PrimaryGeneratedColumn()
   id: string;
-  @Field()
+  @Field({ nullable: true })
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",
   })
   createdAt: Date;
-  @Field()
+  @Field({ nullable: true })
   @UpdateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",

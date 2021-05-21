@@ -12,6 +12,8 @@ import { Job } from "../entities/job";
 import { JobInput } from "../types/job-input";
 import { Place } from "../entities/place";
 import { PlaceInput } from "../types/place-input";
+import { Incomes } from "../entities/incomes";
+import { IncomesInput } from "../types/incomes-input";
 //import { User } from "../entities/user";
 
 //const jobRes = new JobResolver();
@@ -41,7 +43,8 @@ export class ClientResolver {
   async updateClient(
     @Arg("client") clientInput: ClientInput,
     @Arg("job", { nullable: true }) jobInput: JobInput,
-    @Arg("place", { nullable: true }) placeInput: PlaceInput
+    @Arg("place", { nullable: true }) placeInput: PlaceInput,
+    @Arg("incomes", { nullable: true }) incomesInput: IncomesInput
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
@@ -52,7 +55,7 @@ export class ClientResolver {
 
     let client = await Client.findOne({
       where: clientCond,
-      relations: ["job", "place"],
+      relations: ["job", "place", "incomes"],
     });
 
     if (jobInput) {
@@ -65,10 +68,6 @@ export class ClientResolver {
         .of(client)
         .set(job);
     }
-    client = await Client.findOne({
-      where: clientCond,
-      relations: ["job", "place"],
-    });
 
     if (placeInput) {
       let place = await Place.findOne({
@@ -83,9 +82,28 @@ export class ClientResolver {
         .of(client)
         .set(place);
     }
+
+    if (incomesInput) {
+      const incomesData = Incomes.create(incomesInput);
+      const incomesCond = incomesInput.id
+        ? { id: incomesInput.id }
+        : clientInput;
+      incomesInput.id
+        ? await Incomes.update(incomesInput.id, incomesData)
+        : await Incomes.save(incomesData);
+      const incomes = await Incomes.findOne({
+        where: incomesCond,
+      });
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "incomes")
+        .of(client)
+        .set(incomes);
+    }
+
     client = await Client.findOne({
       where: clientCond,
-      relations: ["job", "place"],
+      relations: ["job", "place", "incomes"],
     });
 
     return client;
@@ -97,12 +115,11 @@ export class ClientResolver {
         select: ["id", "lastname", "firstname"],
         where: { id: id },
       });
-      Client.delete({ id: id });
+      Client.delete(id);
       return client;
     } catch (err) {
       console.log(err);
       return err;
     }
   }
-  //@Column({ nullable: true })
 }
