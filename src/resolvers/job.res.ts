@@ -1,5 +1,6 @@
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { Job } from "../entities/job";
+import { JobInput } from "../types/job-input";
 
 @Resolver()
 export class JobResolver {
@@ -34,13 +35,10 @@ export class JobResolver {
     }
   }
   @Mutation(() => Boolean)
-  async createJob(@Arg("name") name: string) {
-    const data = {
-      name: name,
-    };
+  async createJob(@Arg("job") jobInput: JobInput) {
     try {
       const exist = await Job.findOne({
-        where: data,
+        where: jobInput,
       });
       if (exist) {
         throw new Error("Job already exists in database");
@@ -49,10 +47,10 @@ export class JobResolver {
       console.log(err);
       return err;
     }
-    Job.insert(data);
+    Job.insert(jobInput);
     const res = await Job.findOne({
       select: ["id", "name"],
-      where: data,
+      where: jobInput,
     });
     if (!res) {
       throw new Error("Couldn't save job in database");
