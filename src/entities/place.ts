@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, InputType } from "type-graphql";
 import { Entity, Column, OneToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "./base";
 
@@ -23,4 +23,19 @@ export class Place extends BaseEntity {
   @OneToOne(() => Client, (client) => client.place)
   @JoinColumn()
   client: Client;
+}
+
+@InputType()
+export class PlaceInput implements Partial<Place> {
+  @Field()
+  @Column({ nullable: true })
+  adress?: string;
+
+  @Field()
+  @Column()
+  cedex?: string;
+
+  @Field()
+  @Column()
+  city?: string;
 }

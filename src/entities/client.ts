@@ -5,6 +5,7 @@ import { BaseEntity } from "./base";
 import { Place } from "./place";
 import { User } from "./user";
 import { Job } from "./job";
+import { Incomes } from "./incomes";
 
 export enum Gender {
   Monsieur = "Monsieur",
@@ -78,6 +79,10 @@ export class Client extends BaseEntity {
   @Field(() => Place, { nullable: true })
   @OneToOne(() => Place, (place) => place.client)
   place: Place;
+
+  @Field(() => Incomes, { nullable: true })
+  @OneToOne(() => Incomes)
+  incomes: Incomes;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.clients)
