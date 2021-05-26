@@ -109,6 +109,7 @@ export class ClientResolver {
     return client;
   }
 
+  @Mutation(() => Client)
   async deleteClient(@Arg("id") id: string) {
     try {
       const client = await Client.findOne({
