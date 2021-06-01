@@ -41,6 +41,14 @@ registerEnumType(Type, {
   description: "Bilan type",
 });
 
+export enum Bool {
+  Oui = "Oui",
+  Non = "Non",
+}
+registerEnumType(Bool, {
+  name: "Bool",
+  description: "Boolean french values",
+});
 @ObjectType()
 @Entity({
   name: "clients",
@@ -83,7 +91,7 @@ export class Client extends BaseEntity {
   @Column({ nullable: true })
   dependants?: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Bool, { nullable: true })
   @Column({ nullable: true })
   employees?: string;
 

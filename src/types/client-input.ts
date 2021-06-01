@@ -1,6 +1,6 @@
 import { InputType, Field, ID } from "type-graphql";
 
-import { Client, Gender, Family, Type } from "../entities/client";
+import { Client, Gender, Family, Type, Bool } from "../entities/client";
 
 @InputType()
 export class ClientInput implements Partial<Client> {
@@ -34,8 +34,8 @@ export class ClientInput implements Partial<Client> {
   @Field(() => String, { nullable: true })
   dependants: string;
 
-  @Field(() => String, { nullable: true })
-  employees: string;
+  @Field(() => Bool, { nullable: true })
+  employees: Bool;
 
   @Field(() => String, { nullable: true })
   retirementAge: string;

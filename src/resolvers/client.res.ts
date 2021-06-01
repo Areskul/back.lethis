@@ -87,7 +87,7 @@ export class ClientResolver {
       const incomesData = Incomes.create(incomesInput);
       const incomesCond = incomesInput.id
         ? { id: incomesInput.id }
-        : clientInput;
+        : incomesInput;
       incomesInput.id
         ? await Incomes.update(incomesInput.id, incomesData)
         : await Incomes.save(incomesData);
