@@ -7,50 +7,50 @@ export class ChargesInput implements Partial<Charges> {
   id: string;
 
   @Field(() => String, { nullable: true })
-  rent: number;
+  rent: string;
 
   @Field(() => String, { nullable: true })
-  food: number;
+  food: string;
 
   @Field(() => String, { nullable: true })
-  energy: number;
+  energy: string;
 
   @Field(() => String, { nullable: true })
-  isp: number;
+  isp: string;
 
   @Field(() => String, { nullable: true })
-  school: number;
+  school: string;
 
   @Field(() => String, { nullable: true })
-  insurance: number;
+  insurance: string;
 
   @Field(() => String, { nullable: true })
-  help: number;
+  help: string;
 
   @Field(() => String, { nullable: true })
-  transports: number;
+  transports: string;
 
   @Field(() => String, { nullable: true })
-  recreation: number;
+  recreation: string;
 
   @Field(() => String, { nullable: true })
-  holidays: number;
+  holidays: string;
 
   @Field(() => String, { nullable: true })
-  consumer: number;
+  consumer: string;
 
   @Field(() => String, { nullable: true })
-  others: number;
+  others: string;
 
   @Field(() => String, { nullable: true })
-  coownership: number;
+  coownership: string;
 
   @Field(() => String, { nullable: true })
-  total: number;
+  total: string;
 
   @Field(() => String, { nullable: true })
-  qp: number;
+  qp: string;
 
   @Field(() => String, { nullable: true })
-  result: number;
+  result: string;
 }

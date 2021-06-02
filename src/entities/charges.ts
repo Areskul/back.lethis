@@ -11,67 +11,67 @@ import { Client } from "./client";
 export class Charges extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ name: "rent", nullable: true })
-  rent: number;
+  rent: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "food", nullable: true })
-  food: number;
+  food: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "energy", nullable: true })
-  energy: number;
+  energy: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "isp", nullable: true })
-  isp: number;
+  isp: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "school", nullable: true })
-  school: number;
+  school: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "insurance", nullable: true })
-  insurance: number;
+  insurance: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "help", nullable: true })
-  help: number;
+  help: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "transports", nullable: true })
-  transports: number;
+  transports: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "recreation", nullable: true })
-  recreation: number;
+  recreation: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "holidays", nullable: true })
-  holidays: number;
+  holidays: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "consumer", nullable: true })
-  consumer: number;
+  consumer: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "others", nullable: true })
-  others: number;
+  others: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "coownership", nullable: true })
-  coownership: number;
+  coownership: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "total", nullable: true })
-  total: number;
+  total: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "qp", nullable: true })
-  qp: number;
+  qp: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "result", nullable: true })
-  result: number;
+  result: string;
 
   @Field(() => Client, { nullable: true })
   @OneToOne(() => Client)
