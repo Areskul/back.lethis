@@ -14,6 +14,10 @@ import { Place } from "../entities/place";
 import { PlaceInput } from "../types/place-input";
 import { Incomes } from "../entities/incomes";
 import { IncomesInput } from "../types/incomes-input";
+import { Charges } from "../entities/charges";
+import { ChargesInput } from "../types/charges-input";
+import { Taxes } from "../entities/taxes";
+import { TaxesInput } from "../types/taxes-input";
 //import { User } from "../entities/user";
 
 //const jobRes = new JobResolver();
@@ -26,7 +30,7 @@ export class ClientResolver {
       where: {
         id: id,
       },
-      relations: ["job", "place", "incomes"],
+      relations: ["job", "place", "incomes", "charges", "taxes"],
     });
   }
   @Query(() => [Client])
@@ -36,7 +40,7 @@ export class ClientResolver {
         lastname: "ASC",
         firstname: "DESC",
       },
-      relations: ["job", "place", "incomes"],
+      relations: ["job", "place", "incomes", "charges", "taxes"],
     });
   }
   @Mutation(() => Client)
@@ -44,7 +48,9 @@ export class ClientResolver {
     @Arg("client") clientInput: ClientInput,
     @Arg("job", { nullable: true }) jobInput: JobInput,
     @Arg("place", { nullable: true }) placeInput: PlaceInput,
-    @Arg("incomes", { nullable: true }) incomesInput: IncomesInput
+    @Arg("incomes", { nullable: true }) incomesInput: IncomesInput,
+    @Arg("charges", { nullable: true }) chargesInput: ChargesInput,
+    @Arg("taxes", { nullable: true }) taxesInput: TaxesInput
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
@@ -55,7 +61,7 @@ export class ClientResolver {
 
     let client = await Client.findOne({
       where: clientCond,
-      relations: ["job", "place", "incomes"],
+      relations: ["job", "place", "incomes", "charges", "taxes"],
     });
 
     if (jobInput) {
@@ -101,9 +107,43 @@ export class ClientResolver {
         .set(incomes);
     }
 
+    if (chargesInput) {
+      const chargesData = Charges.create(chargesInput);
+      const chargesCond = chargesInput.id
+        ? { id: chargesInput.id }
+        : chargesInput;
+      chargesInput.id
+        ? await Charges.update(chargesInput.id, chargesData)
+        : await Charges.save(chargesData);
+      const charges = await Charges.findOne({
+        where: chargesCond,
+      });
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "charges")
+        .of(client)
+        .set(charges);
+    }
+
+    if (taxesInput) {
+      const taxesData = Taxes.create(taxesInput);
+      const taxesCond = taxesInput.id ? { id: taxesInput.id } : taxesInput;
+      taxesInput.id
+        ? await Taxes.update(taxesInput.id, taxesData)
+        : await Taxes.save(taxesData);
+      const taxes = await Taxes.findOne({
+        where: taxesCond,
+      });
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "taxes")
+        .of(client)
+        .set(taxes);
+    }
+
     client = await Client.findOne({
       where: clientCond,
-      relations: ["job", "place", "incomes"],
+      relations: ["job", "place", "incomes", "charges", "taxes"],
     });
 
     return client;

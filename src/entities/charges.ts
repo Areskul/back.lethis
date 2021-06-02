@@ -6,28 +6,60 @@ import { Client } from "./client";
 
 @ObjectType()
 @Entity({
-  name: "incomes",
+  name: "charges",
 })
 export class Charges extends BaseEntity {
   @Field(() => String, { nullable: true })
-  @Column({ name: "benefits", nullable: true })
-  benefits: number;
+  @Column({ name: "rent", nullable: true })
+  rent: number;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "wage", nullable: true })
-  wage: number;
+  @Column({ name: "food", nullable: true })
+  food: number;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "landed", nullable: true })
-  landed: number;
+  @Column({ name: "energy", nullable: true })
+  energy: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "isp", nullable: true })
+  isp: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "school", nullable: true })
+  school: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "insurance", nullable: true })
+  insurance: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "help", nullable: true })
+  help: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "transports", nullable: true })
+  transports: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "recreation", nullable: true })
+  recreation: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "holidays", nullable: true })
+  holidays: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "consumer", nullable: true })
+  consumer: number;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "others", nullable: true })
   others: number;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "joint", nullable: true })
-  joint: number;
+  @Column({ name: "coownership", nullable: true })
+  coownership: number;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "total", nullable: true })

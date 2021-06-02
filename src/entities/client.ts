@@ -13,6 +13,8 @@ import { Place } from "./place";
 import { User } from "./user";
 import { Job } from "./job";
 import { Incomes } from "./incomes";
+import { Charges } from "./charges";
+import { Taxes } from "./taxes";
 
 export enum Gender {
   Monsieur = "Monsieur",
@@ -108,6 +110,16 @@ export class Client extends BaseEntity {
   @OneToOne(() => Incomes)
   @JoinColumn()
   incomes: Incomes;
+
+  @Field(() => Charges, { nullable: true })
+  @OneToOne(() => Charges)
+  @JoinColumn()
+  charges: Charges;
+
+  @Field(() => Taxes, { nullable: true })
+  @OneToOne(() => Taxes)
+  @JoinColumn()
+  taxes: Taxes;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.clients)
