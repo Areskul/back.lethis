@@ -67,35 +67,35 @@ export class Client extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  phone?: string;
+  phone: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  email?: string;
+  email: string;
 
   @Field(() => Type, { nullable: true })
   @Column({ nullable: true })
-  type?: Type;
+  type: Type;
 
   @Field(() => Gender)
   @Column({ nullable: true })
-  gender?: Gender;
+  gender: Gender;
 
   @Field(() => Family, { nullable: true })
   @Column({ nullable: true })
-  family?: Family;
+  family: Family;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  birthdate?: string;
+  birthdate: string;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  dependants?: string;
+  dependants: string;
 
   @Field(() => Bool, { nullable: true })
   @Column({ nullable: true })
-  employees?: string;
+  employees: Bool;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
