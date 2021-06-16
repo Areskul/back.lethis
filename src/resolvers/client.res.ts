@@ -28,15 +28,25 @@ export class ClientResolver {
     relationName: string,
     relation: any
   ) {
-    const data = relation.create(rawInput);
+    let data = relation.create(rawInput);
     if (rawInput.id) {
       await relation.update(rawInput.id, data);
     } else {
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, relationName)
-        .of(client)
-        .set(data);
+      try {
+        let dataWithId = await relation.findOne({ where: data });
+        console.log(dataWithId);
+        await getConnection()
+          .createQueryBuilder()
+          .relation(Client, relationName)
+          .of(client)
+          .set(dataWithId);
+      } catch {
+        await getConnection()
+          .createQueryBuilder()
+          .relation(Client, relationName)
+          .of(client)
+          .set(data);
+      }
     }
   }
   @Query(() => Client)
@@ -76,14 +86,16 @@ export class ClientResolver {
       where: clientCond,
       relations: ["job", "place", "incomes", "charges", "taxes"],
     });
-
-    jobInput ? await this.linkOrUpdate(client, jobInput, "job", Job) : "";
+    console.log("updateClient");
+    jobInput
+      ? await this.linkOrUpdate(client, jobInput, "job", Job)
+      : console.log("no job input");
     placeInput
       ? await this.linkOrUpdate(client, placeInput, "place", Place)
-      : console.log("no job input");
+      : console.log("no place input");
     incomesInput
       ? await this.linkOrUpdate(client, incomesInput, "incomes", Incomes)
-      : "";
+      : console.log("no incomes input");
     chargesInput
       ? await this.linkOrUpdate(client, chargesInput, "charges", Charges)
       : "";
