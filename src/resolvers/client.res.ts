@@ -20,10 +20,25 @@ import { Taxes } from "../entities/taxes";
 import { TaxesInput } from "../types/taxes-input";
 //import { User } from "../entities/user";
 
-//const jobRes = new JobResolver();
-
 @Resolver()
 export class ClientResolver {
+  async linkOrUpdate(
+    client: any,
+    rawInput: any,
+    relationName: string,
+    relation: any
+  ) {
+    const data = relation.create(rawInput);
+    if (rawInput.id) {
+      await relation.update(rawInput.id, data);
+    } else {
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, relationName)
+        .of(client)
+        .set(data);
+    }
+  }
   @Query(() => Client)
   async client(@Arg("id") id: string) {
     return Client.findOne({
@@ -54,98 +69,48 @@ export class ClientResolver {
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
-
     clientInput.id
       ? await Client.update(clientInput.id, clientData)
       : await Client.save(clientData);
-
     let client = await Client.findOne({
       where: clientCond,
       relations: ["job", "place", "incomes", "charges", "taxes"],
     });
 
-    if (jobInput) {
-      const job = await Job.findOne({
-        where: jobInput,
-      });
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, "job")
-        .of(client)
-        .set(job);
-    }
+    jobInput ? await this.linkOrUpdate(client, jobInput, "job", Job) : "";
+    placeInput
+      ? await this.linkOrUpdate(client, placeInput, "place", Place)
+      : console.log("no job input");
+    incomesInput
+      ? await this.linkOrUpdate(client, incomesInput, "incomes", Incomes)
+      : "";
+    chargesInput
+      ? await this.linkOrUpdate(client, chargesInput, "charges", Charges)
+      : "";
+    taxesInput
+      ? await this.linkOrUpdate(client, taxesInput, "taxes", Taxes)
+      : "";
 
-    if (placeInput) {
-      let place = await Place.findOne({
-        where: placeInput,
-      });
-      if (!place) {
-        place = await Place.save(Place.create(placeInput));
-      }
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, "place")
-        .of(client)
-        .set(place);
-    }
-
-    if (incomesInput) {
-      const incomesData = Incomes.create(incomesInput);
-      const incomesCond = incomesInput.id
-        ? { id: incomesInput.id }
-        : incomesInput;
-      incomesInput.id
-        ? await Incomes.update(incomesInput.id, incomesData)
-        : await Incomes.save(incomesData);
-      const incomes = await Incomes.findOne({
-        where: incomesCond,
-      });
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, "incomes")
-        .of(client)
-        .set(incomes);
-    }
-
-    if (chargesInput) {
-      const chargesData = Charges.create(chargesInput);
-      const chargesCond = chargesInput.id
-        ? { id: chargesInput.id }
-        : chargesInput;
-      chargesInput.id
-        ? await Charges.update(chargesInput.id, chargesData)
-        : await Charges.save(chargesData);
-      const charges = await Charges.findOne({
-        where: chargesCond,
-      });
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, "charges")
-        .of(client)
-        .set(charges);
-    }
-
-    if (taxesInput) {
-      const taxesData = Taxes.create(taxesInput);
-      const taxesCond = taxesInput.id ? { id: taxesInput.id } : taxesInput;
-      taxesInput.id
-        ? await Taxes.update(taxesInput.id, taxesData)
-        : await Taxes.save(taxesData);
-      const taxes = await Taxes.findOne({
-        where: taxesCond,
-      });
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, "taxes")
-        .of(client)
-        .set(taxes);
-    }
+    //if (taxesInput) {
+    //const taxesData = Taxes.create(taxesInput);
+    //const taxesCond = taxesInput.id ? { id: taxesInput.id } : taxesInput;
+    //taxesInput.id
+    //? await Taxes.update(taxesInput.id, taxesData)
+    //: await Taxes.save(taxesData);
+    //const taxes = await Taxes.findOne({
+    //where: taxesCond,
+    //});
+    //await getConnection()
+    //.createQueryBuilder()
+    //.relation(Client, "taxes")
+    //.of(client)
+    //.set(taxes);
+    //}
 
     client = await Client.findOne({
       where: clientCond,
       relations: ["job", "place", "incomes", "charges", "taxes"],
     });
-
     return client;
   }
 

@@ -102,22 +102,22 @@ export class Client extends BaseEntity {
   retirementAge?: string;
 
   @Field(() => Place, { nullable: true })
-  @OneToOne(() => Place)
+  @OneToOne(() => Place, { onDelete: "CASCADE" })
   @JoinColumn()
   place: Place;
 
   @Field(() => Incomes, { nullable: true })
-  @OneToOne(() => Incomes)
+  @OneToOne(() => Incomes, { onDelete: "CASCADE" })
   @JoinColumn()
   incomes: Incomes;
 
   @Field(() => Charges, { nullable: true })
-  @OneToOne(() => Charges)
+  @OneToOne(() => Charges, { onDelete: "CASCADE" })
   @JoinColumn()
   charges: Charges;
 
   @Field(() => Taxes, { nullable: true })
-  @OneToOne(() => Taxes)
+  @OneToOne(() => Taxes, { onDelete: "CASCADE" })
   @JoinColumn()
   taxes: Taxes;
 
