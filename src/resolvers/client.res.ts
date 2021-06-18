@@ -18,6 +18,8 @@ import { Charges } from "../entities/charges";
 import { ChargesInput } from "../types/charges-input";
 import { Taxes } from "../entities/taxes";
 import { TaxesInput } from "../types/taxes-input";
+import { RealEstate } from "../entities/realestate";
+import { RealEstateInput } from "../types/realestate-input";
 //import { User } from "../entities/user";
 
 @Resolver()
@@ -77,7 +79,8 @@ export class ClientResolver {
     @Arg("place", { nullable: true }) placeInput: PlaceInput,
     @Arg("incomes", { nullable: true }) incomesInput: IncomesInput,
     @Arg("charges", { nullable: true }) chargesInput: ChargesInput,
-    @Arg("taxes", { nullable: true }) taxesInput: TaxesInput
+    @Arg("taxes", { nullable: true }) taxesInput: TaxesInput,
+    @Arg("realestate", { nullable: true }) realestateInput: RealEstateInput
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
@@ -104,6 +107,14 @@ export class ClientResolver {
     taxesInput
       ? await this.linkOrUpdate(client, taxesInput, "taxes", Taxes)
       : "";
+    realestateInput
+      ? await this.linkOrUpdate(
+          client,
+          realestateInput,
+          "realestate",
+          RealEstate
+        )
+      : console.log("no incomes input");
 
     //if (taxesInput) {
     //const taxesData = Taxes.create(taxesInput);
