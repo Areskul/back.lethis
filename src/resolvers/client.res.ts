@@ -29,7 +29,9 @@ export class ClientResolver {
     relation: any
   ) {
     let data = relation.create(rawInput);
-    if (rawInput.id) {
+    if (rawInput.name) {
+      await relation.update(rawInput.name, data);
+    } else if (rawInput.id) {
       await relation.update(rawInput.id, data);
     } else {
       try {

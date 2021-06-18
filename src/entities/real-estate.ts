@@ -19,35 +19,51 @@ registerEnumType(Fiscality, {
 export class RealEstate extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ name: "benefits", nullable: true })
-  benefits: number;
+  fiscality: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "wage", nullable: true })
-  wage: number;
+  owner: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "landed", nullable: true })
-  landed: number;
+  name: string;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "others", nullable: true })
-  others: number;
+  value: number;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "joint", nullable: true })
-  joint: number;
+  monthly: number;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "total", nullable: true })
-  total: number;
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: "qp", nullable: true })
   qp: number;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "result", nullable: true })
+  @Column({ name: "qp", nullable: true })
   result: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "result", nullable: true })
+  taxe: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "qp", nullable: true })
+  taxeResult: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "result", nullable: true })
+  rest: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "result", nullable: true })
+  rate: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "wage", nullable: true })
+  date: string;
 
   @Field(() => Client, { nullable: true })
   @OneToOne(() => Client)
