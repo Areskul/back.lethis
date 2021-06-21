@@ -31,25 +31,25 @@ export class ClientResolver {
     relation: any
   ) {
     let data = relation.create(rawInput);
-    if (rawInput.name) {
-      await relation.update(rawInput.name, data);
-    } else if (rawInput.id) {
+    if (rawInput.id) {
       await relation.update(rawInput.id, data);
     } else {
       try {
-        let dataWithId = await relation.findOne({ where: data });
-        console.log(dataWithId);
-        await getConnection()
-          .createQueryBuilder()
-          .relation(Client, relationName)
-          .of(client)
-          .set(dataWithId);
-      } catch {
+        //let dataWithId = await relation.findOne({ where: data });
+        //console.log(dataWithId);
+        //await getConnection()
+        //.createQueryBuilder()
+        //.relation(Client, relationName)
+        //.of(client)
+        //.set(dataWithId);
         await getConnection()
           .createQueryBuilder()
           .relation(Client, relationName)
           .of(client)
           .set(data);
+      } catch (err) {
+        console.log(err);
+        return err;
       }
     }
   }
@@ -83,6 +83,7 @@ export class ClientResolver {
     @Arg("realestate", { nullable: true }) realestateInput: RealEstateInput
   ) {
     const clientData = Client.create(clientInput);
+    console.log(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
     clientInput.id
       ? await Client.update(clientInput.id, clientData)
@@ -92,45 +93,27 @@ export class ClientResolver {
       relations: ["job", "place", "incomes", "charges", "taxes"],
     });
     console.log("updateClient");
-    jobInput
-      ? await this.linkOrUpdate(client, jobInput, "job", Job)
-      : console.log("no job input");
-    placeInput
-      ? await this.linkOrUpdate(client, placeInput, "place", Place)
-      : console.log("no place input");
-    incomesInput
-      ? await this.linkOrUpdate(client, incomesInput, "incomes", Incomes)
-      : console.log("no incomes input");
-    chargesInput
-      ? await this.linkOrUpdate(client, chargesInput, "charges", Charges)
-      : "";
-    taxesInput
-      ? await this.linkOrUpdate(client, taxesInput, "taxes", Taxes)
-      : "";
-    realestateInput
-      ? await this.linkOrUpdate(
-          client,
-          realestateInput,
-          "realestate",
-          RealEstate
-        )
-      : console.log("no incomes input");
-
-    //if (taxesInput) {
-    //const taxesData = Taxes.create(taxesInput);
-    //const taxesCond = taxesInput.id ? { id: taxesInput.id } : taxesInput;
-    //taxesInput.id
-    //? await Taxes.update(taxesInput.id, taxesData)
-    //: await Taxes.save(taxesData);
-    //const taxes = await Taxes.findOne({
-    //where: taxesCond,
-    //});
-    //await getConnection()
-    //.createQueryBuilder()
-    //.relation(Client, "taxes")
-    //.of(client)
-    //.set(taxes);
-    //}
+    if (jobInput) {
+      const job = await Job.findOne({ where: jobInput });
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "job")
+        .of(client)
+        .set(job);
+    }
+    if (placeInput) await this.linkOrUpdate(client, placeInput, "place", Place);
+    if (incomesInput)
+      await this.linkOrUpdate(client, incomesInput, "incomes", Incomes);
+    if (chargesInput)
+      await this.linkOrUpdate(client, chargesInput, "charges", Charges);
+    if (taxesInput) await this.linkOrUpdate(client, taxesInput, "taxes", Taxes);
+    if (realestateInput)
+      await this.linkOrUpdate(
+        client,
+        realestateInput,
+        "realestate",
+        RealEstate
+      );
 
     client = await Client.findOne({
       where: clientCond,
