@@ -35,18 +35,12 @@ export class ClientResolver {
       await relation.update(rawInput.id, data);
     } else {
       try {
-        //let dataWithId = await relation.findOne({ where: data });
-        //console.log(dataWithId);
-        //await getConnection()
-        //.createQueryBuilder()
-        //.relation(Client, relationName)
-        //.of(client)
-        //.set(dataWithId);
+        const entity = await relation.save(data);
         await getConnection()
           .createQueryBuilder()
           .relation(Client, relationName)
           .of(client)
-          .set(data);
+          .set(entity);
       } catch (err) {
         console.log(err);
         return err;
@@ -83,7 +77,6 @@ export class ClientResolver {
     @Arg("realestate", { nullable: true }) realestateInput: RealEstateInput
   ) {
     const clientData = Client.create(clientInput);
-    console.log(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
     clientInput.id
       ? await Client.update(clientInput.id, clientData)
