@@ -91,4 +91,5 @@ Sauvegarde des données clients: checked
 Roles:
   Admin/Moderateur/User : not checked
 Relations:
-  1 utilisateur peut avoir plusieurs clients: not checked 
+  1 utilisateur peut avoir plusieurs clients: not checked
+  -> besoin, de rajouter des relations
