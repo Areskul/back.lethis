@@ -14,32 +14,28 @@ registerEnumType(Fiscality, {
 
 @ObjectType()
 @Entity({
-  name: "RealEstate",
+  name: "realestate",
 })
 export class RealEstate extends BaseEntity {
   @Field(() => String, { nullable: true })
-  @Column({ name: "benefits", nullable: true })
-  benefits: number;
+  @Column({ name: "fiscality", nullable: true })
+  fiscality: string;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "wage", nullable: true })
-  wage: number;
+  @Column({ name: "owner", nullable: true })
+  owner: string;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "landed", nullable: true })
-  landed: number;
+  @Column({ name: "name", nullable: true })
+  name: string;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "others", nullable: true })
-  others: number;
+  @Column({ name: "value", nullable: true })
+  value: number;
 
   @Field(() => String, { nullable: true })
-  @Column({ name: "joint", nullable: true })
-  joint: number;
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: "total", nullable: true })
-  total: number;
+  @Column({ name: "monthly", nullable: true })
+  monthly: number;
 
   @Field(() => String, { nullable: true })
   @Column({ name: "qp", nullable: true })
@@ -48,6 +44,26 @@ export class RealEstate extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ name: "result", nullable: true })
   result: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "taxe", nullable: true })
+  taxe: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "taxeResult", nullable: true })
+  taxeResult: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "rest", nullable: true })
+  rest: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "rate", nullable: true })
+  rate: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: "date", nullable: true })
+  date: string;
 
   @Field(() => Client, { nullable: true })
   @OneToOne(() => Client)

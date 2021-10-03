@@ -15,6 +15,7 @@ import { Job } from "./job";
 import { Incomes } from "./incomes";
 import { Charges } from "./charges";
 import { Taxes } from "./taxes";
+import { RealEstate } from "./realestate";
 
 export enum Gender {
   Monsieur = "Monsieur",
@@ -120,6 +121,11 @@ export class Client extends BaseEntity {
   @OneToOne(() => Taxes, { onDelete: "CASCADE" })
   @JoinColumn()
   taxes: Taxes;
+
+  @Field(() => RealEstate, { nullable: true })
+  @OneToOne(() => RealEstate, { onDelete: "CASCADE" })
+  @JoinColumn()
+  realestate: RealEstate;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.clients)

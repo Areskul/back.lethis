@@ -18,6 +18,8 @@ import { Charges } from "../entities/charges";
 import { ChargesInput } from "../types/charges-input";
 import { Taxes } from "../entities/taxes";
 import { TaxesInput } from "../types/taxes-input";
+import { RealEstate } from "../entities/realestate";
+import { RealEstateInput } from "../types/realestate-input";
 //import { User } from "../entities/user";
 
 @Resolver()
@@ -28,15 +30,21 @@ export class ClientResolver {
     relationName: string,
     relation: any
   ) {
-    const data = relation.create(rawInput);
+    let data = relation.create(rawInput);
     if (rawInput.id) {
       await relation.update(rawInput.id, data);
     } else {
-      await getConnection()
-        .createQueryBuilder()
-        .relation(Client, relationName)
-        .of(client)
-        .set(data);
+      try {
+        const entity = await relation.save(data);
+        await getConnection()
+          .createQueryBuilder()
+          .relation(Client, relationName)
+          .of(client)
+          .set(entity);
+      } catch (err) {
+        console.log(err);
+        return err;
+      }
     }
   }
   @Query(() => Client)
@@ -65,7 +73,8 @@ export class ClientResolver {
     @Arg("place", { nullable: true }) placeInput: PlaceInput,
     @Arg("incomes", { nullable: true }) incomesInput: IncomesInput,
     @Arg("charges", { nullable: true }) chargesInput: ChargesInput,
-    @Arg("taxes", { nullable: true }) taxesInput: TaxesInput
+    @Arg("taxes", { nullable: true }) taxesInput: TaxesInput,
+    @Arg("realestate", { nullable: true }) realestateInput: RealEstateInput
   ) {
     const clientData = Client.create(clientInput);
     const clientCond = clientInput.id ? { id: clientInput.id } : clientInput;
@@ -76,36 +85,28 @@ export class ClientResolver {
       where: clientCond,
       relations: ["job", "place", "incomes", "charges", "taxes"],
     });
-
-    jobInput ? await this.linkOrUpdate(client, jobInput, "job", Job) : "";
-    placeInput
-      ? await this.linkOrUpdate(client, placeInput, "place", Place)
-      : console.log("no job input");
-    incomesInput
-      ? await this.linkOrUpdate(client, incomesInput, "incomes", Incomes)
-      : "";
-    chargesInput
-      ? await this.linkOrUpdate(client, chargesInput, "charges", Charges)
-      : "";
-    taxesInput
-      ? await this.linkOrUpdate(client, taxesInput, "taxes", Taxes)
-      : "";
-
-    //if (taxesInput) {
-    //const taxesData = Taxes.create(taxesInput);
-    //const taxesCond = taxesInput.id ? { id: taxesInput.id } : taxesInput;
-    //taxesInput.id
-    //? await Taxes.update(taxesInput.id, taxesData)
-    //: await Taxes.save(taxesData);
-    //const taxes = await Taxes.findOne({
-    //where: taxesCond,
-    //});
-    //await getConnection()
-    //.createQueryBuilder()
-    //.relation(Client, "taxes")
-    //.of(client)
-    //.set(taxes);
-    //}
+    console.log("updateClient");
+    if (jobInput) {
+      const job = await Job.findOne({ where: jobInput });
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Client, "job")
+        .of(client)
+        .set(job);
+    }
+    if (placeInput) await this.linkOrUpdate(client, placeInput, "place", Place);
+    if (incomesInput)
+      await this.linkOrUpdate(client, incomesInput, "incomes", Incomes);
+    if (chargesInput)
+      await this.linkOrUpdate(client, chargesInput, "charges", Charges);
+    if (taxesInput) await this.linkOrUpdate(client, taxesInput, "taxes", Taxes);
+    if (realestateInput)
+      await this.linkOrUpdate(
+        client,
+        realestateInput,
+        "realestate",
+        RealEstate
+      );
 
     client = await Client.findOne({
       where: clientCond,
