@@ -60,12 +60,35 @@ https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/
 Typegraph et TypeORM sont des surcouches en javascript
 qui permettent d'intéragir avec la base de donnée 
 
-
-# Git Branches
+Les fihiers de configuration afin de lier l'ORM a la base de donnée est ormconfig.json
+## Git Branches
 
 Il y a une version stable sur la branche "main",
 Et celle en developpement avec les nouveaux features
 est sur la branche "dev"
  
 
+# Etat de l'application
 
+Modèle de base de donnée au point et stable.
+
+Les différentes entités à "./entitites" représentent une TABLE dans la base de donnée avec les différents type de valeurs qu'elle contient.
+
+Ex: "./entities/client.ts" contient la définition type d'un client
+
+Le code ci-dessous est à titre d'exemple. Voir le contenu du fichier pour la définition complète du client.
+```json
+Client: {
+  pacsé: oui | non
+  sexe: M | F
+}
+```
+
+Authentification d'utilisateur: checked
+
+Sauvegarde des données clients: checked
+
+Roles:
+  Admin/Moderateur/User : not checked
+Relations:
+  1 utilisateur peut avoir plusieurs clients: not checked 
